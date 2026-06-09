@@ -36,19 +36,7 @@ SCRAPE_WORKERS: int = int(os.getenv("SCRAPE_WORKERS", "4"))   # parallel job fet
 LINKEDIN_EMAIL: str = os.getenv("LINKEDIN_EMAIL", "")
 LINKEDIN_PASSWORD: str = os.getenv("LINKEDIN_PASSWORD", "")
 
-# ── Job search queries — tuned to Panagiotis's profile and 10-year vision ──
-SEARCH_QUERIES = [
-    "Graduate Process Engineer",
-    "Manufacturing Engineer graduate",
-    "Operations Excellence Engineer",
-    "Technical Program Manager graduate",
-    "Process Improvement Engineer",
-    "Aerospace Engineer graduate",
-    "Production Engineer FMCG",
-    "Supply Chain Engineer graduate",
-    "Reliability Engineer graduate",
-]
-
-SEARCH_LOCATIONS = [
-    "Europe",
-]
+# ── Job search queries & locations — loaded from the candidate's profile ────
+# These come from inputs/profile.json (generated during setup), so the app
+# searches for whatever roles/regions the current user actually wants.
+from career_profile import SEARCH_QUERIES, SEARCH_LOCATIONS  # noqa: E402,F401

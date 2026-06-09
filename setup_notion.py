@@ -45,7 +45,7 @@ def create_jobs_database(parent_page_id: str) -> dict:
     """Create the Job Matches database with all required properties."""
     payload = {
         "parent": {"type": "page_id", "page_id": parent_page_id},
-        "title": [{"type": "text", "text": {"content": "🎯 Job Matches — Panagiotis"}}],
+        "title": [{"type": "text", "text": {"content": "🎯 Job Matches"}}],
         "properties": {
             "Job Title":        {"title": {}},
             "Company":          {"rich_text": {}},

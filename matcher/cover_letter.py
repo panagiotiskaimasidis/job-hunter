@@ -17,7 +17,7 @@ from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 
 import config
-from career_profile import SYSTEM_CONTEXT
+from career_profile import SYSTEM_CONTEXT, NAME, CONTACT_LINE
 from matcher.ai_client import generate as _ai_generate
 
 logger = logging.getLogger(__name__)
@@ -40,7 +40,7 @@ def generate_cover_letter_text(job_title: str, company: str, job_description: st
     matched = evaluation.get("matched_skills", [])
 
     prompt = f"""
-Write a professional cover letter for Panagiotis Kaimasidis applying to:
+Write a professional cover letter for {NAME or "the candidate"} applying to:
 
 ROLE: {job_title}
 COMPANY: {company}
@@ -94,12 +94,10 @@ def build_cover_letter_pdf(letter_text: str, output_path: Path,
 
     story = []
 
-    # Letterhead
-    story.append(Paragraph("PANAGIOTIS KAIMASIDIS", header_style))
-    story.append(Paragraph(
-        "panagiotiskaimasidis@gmail.com · +30 6980423845 · linkedin.com/in/PKaimasidis",
-        sub_style
-    ))
+    # Letterhead (loaded from the candidate's profile)
+    story.append(Paragraph(NAME.upper(), header_style))
+    if CONTACT_LINE:
+        story.append(Paragraph(CONTACT_LINE.replace("|", "·"), sub_style))
     story.append(Paragraph(datetime.now().strftime("%B %d, %Y"), date_style))
     story.append(Paragraph(f"Re: {job_title} — {company}", sub_style))
     story.append(Spacer(1, 6*mm))
@@ -111,7 +109,7 @@ def build_cover_letter_pdf(letter_text: str, output_path: Path,
             story.append(Paragraph(para.replace("\n", " "), body_style))
 
     story.append(Paragraph("Sincerely,", sign_style))
-    story.append(Paragraph("Panagiotis Kaimasidis", sign_style))
+    story.append(Paragraph(NAME, sign_style))
 
     doc.build(story)
     logger.info("[cover_letter] PDF written: %s", output_path)
@@ -126,7 +124,8 @@ def create_cover_letter(job: object, evaluation: dict, output_dir: Path) -> Path
         evaluation=evaluation,
     )
 
-    pdf_path = output_dir / "KAIMASIDIS_PANAGIOTIS_COVERLETTER.pdf"
+    _slug = "".join(c for c in NAME.upper() if c.isalnum() or c == " ").strip().replace(" ", "_") or "CANDIDATE"
+    pdf_path = output_dir / f"{_slug}_COVERLETTER.pdf"
     build_cover_letter_pdf(text, pdf_path, job.title, job.company)
 
     return pdf_path

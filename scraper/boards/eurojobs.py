@@ -1,6 +1,6 @@
 """
-EuroEngineering / Eurojobs scraper — specifically targets European engineering roles
-which is Panagiotis's primary market (Greece, Belgium, Netherlands, Germany, UK, etc.).
+EuroEngineering / Eurojobs scraper — targets European roles across the major
+markets (Greece, Belgium, Netherlands, Germany, UK, etc.).
 
 Uses EuroJobs.com public search — no login required.
 """

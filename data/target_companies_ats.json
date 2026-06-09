@@ -1,0 +1,12 @@
+{
+  "Boeing": {
+    "ats": "workday",
+    "endpoint": "https://boeing.wd1.myworkdayjobs.com/wday/cxs/boeing/External_Careers/jobs",
+    "verified": true
+  },
+  "Thales": {
+    "ats": "workday",
+    "endpoint": "https://thales.wd3.myworkdayjobs.com/wday/cxs/thales/Careers/jobs",
+    "verified": true
+  }
+}

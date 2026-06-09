@@ -1,5 +1,8 @@
-# Secrets — NEVER commit
+# Secrets & personal data — NEVER commit
 .env
+inputs/profile.json
+inputs/*.pdf
+inputs/PUT_YOUR_CV_HERE.txt
 
 # Generated output
 applications/

@@ -10,7 +10,7 @@ import logging
 import re
 
 import config
-from career_profile import SYSTEM_CONTEXT
+from career_profile import SYSTEM_CONTEXT, NAME
 from matcher.ai_client import generate as _ai_generate
 from scraper.base import JobPosting
 
@@ -32,7 +32,7 @@ def _strip_fences(text: str) -> str:
 
 def evaluate_job(job: JobPosting) -> dict:
     """
-    Score a job posting against Panagiotis's CV and career vision.
+    Score a job posting against the candidate's CV and career vision.
 
     Returns:
         {
@@ -50,7 +50,7 @@ def evaluate_job(job: JobPosting) -> dict:
         }
     """
     prompt = f"""
-You are evaluating a job posting for Panagiotis Kaimasidis. Score it rigorously.
+You are evaluating a job posting for {NAME or "this candidate"}. Score it rigorously.
 
 JOB POSTING:
 Title: {job.title}

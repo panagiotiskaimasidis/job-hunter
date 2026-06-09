@@ -1,69 +1,60 @@
-# 🎯 Job Hunter — Panagiotis Kaimasidis
+# 🎯 Job Hunter
 
-Automated job application pipeline:
-**Scrape → Score → Tailor CV → Write Cover Letter → Log to Notion**
+An AI-powered job search & application assistant:
+**Scrape → Score → Tailor CV → Write Cover Letter → Log to a dashboard**
+
+> **New here? Read [`START_HERE.md`](START_HERE.md) first** — it's the no-code,
+> 3-step setup guide. This README is the technical reference.
 
 ---
 
 ## What it does
 
-1. **Scrapes** LinkedIn, Indeed, and EuroJobs for engineering/ops roles matching your profile
-2. **Scores** every job 1–10 using Claude, evaluating CV fit + career vision alignment
-3. For jobs scoring ≥ 7 (`MIN_MATCH_SCORE`), it:
-   - Creates an `applications/<score>_<company>/` folder
-   - Generates a **tailored CV PDF** reframing your real experience for that specific role
-   - Generates a **cover letter PDF** — confident, human, company-specific, ~350 words
-   - Creates a **Notion page** with match analysis, career path potential, and a status tracker
+1. **Scrapes** LinkedIn, Indeed, EuroJobs, and company career pages for roles
+   matching the candidate's profile.
+2. **Scores** every job 1–10 with an AI, evaluating CV fit + career-vision alignment.
+3. For jobs scoring ≥ `MIN_MATCH_SCORE` (default 7), it:
+   - Creates an `applications/<score>_<company>_<title>/` folder
+   - Generates a **tailored CV PDF** reframing real experience for that role
+   - Generates a **cover letter PDF** — confident, human, company-specific
+   - Creates a **dashboard page** (Notion) with the match analysis and a status tracker
+
+Every personal detail — name, CV, career goals, search terms — comes from the
+candidate's profile (`inputs/profile.json`), generated at setup. The code itself
+contains no personal data, so it works for anyone.
 
 ---
 
-## Setup (5 minutes)
+## Setup
 
-### 1. Install dependencies
-```bash
-pip install -r requirements.txt
-```
+**The easy way:** follow [`START_HERE.md`](START_HERE.md) — drop in a CV, fill the
+questionnaire, then run `python setup.py` (or ask Claude to "set up my job hunter").
 
-### 2. Configure secrets
-```bash
-cp .env.example .env
-```
-Edit `.env` and fill in:
+**What setup produces:**
+- `.env` — API keys (Groq required; Gemini + Notion optional)
+- `inputs/profile.json` — identity, CV text, career vision, search queries
 
-| Variable | Where to get it |
+| Key | Where to get it |
 |---|---|
-| `ANTHROPIC_API_KEY` | [console.anthropic.com](https://console.anthropic.com) → API Keys |
-| `NOTION_API_KEY` | [notion.so/my-integrations](https://www.notion.so/my-integrations) → New integration |
-| `NOTION_DATABASE_ID` | Run `python setup_notion.py` (see step 3) |
+| `GROQ_API_KEY` | [console.groq.com](https://console.groq.com) (required) |
+| `GEMINI_API_KEY` | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) (optional backup) |
+| `NOTION_API_KEY` | [notion.so/my-integrations](https://www.notion.so/my-integrations) (optional) |
+| `NOTION_DATABASE_ID` | run `python setup_notion.py` (optional) |
 
-### 3. Create your Notion database (one-time)
-```bash
-python setup_notion.py
-```
-Copy the printed `NOTION_DATABASE_ID` into your `.env`.
-
-> **Skip Notion?** Leave `NOTION_API_KEY` and `NOTION_DATABASE_ID` blank —
-> the pipeline still creates local application folders with CVs and cover letters.
+> **Skip Notion?** Leave the Notion keys blank — the pipeline still writes local
+> application folders with CVs and cover letters.
 
 ---
 
 ## Usage
 
 ```bash
-# Full pipeline — scrape all boards then evaluate
-python main.py
-
-# Scrape only (no AI evaluation)
-python main.py --scrape-only
-
-# Evaluate already-scraped jobs (no scraping)
-python main.py --evaluate-only
-
-# Process a single job URL (paste from browser)
-python main.py --url "https://www.linkedin.com/jobs/view/..."
-
-# Add an extra search query to this run
-python main.py --query "Digital Manufacturing Engineer"
+python main.py                  # full pipeline — scrape then evaluate
+python main.py --scrape-only    # scrape only (no AI evaluation)
+python main.py --evaluate-only  # evaluate already-scraped jobs
+python main.py --generate-docs  # build CV+letter for jobs flagged in Notion
+python main.py --url "<url>"     # process a single job URL
+python main.py --query "<text>" # add an extra search query for this run
 ```
 
 ---
@@ -72,71 +63,48 @@ python main.py --query "Digital Manufacturing Engineer"
 
 ```
 applications/
-  09_Siemens_Energy_Process_Engineer/
-    job_description.txt          # full JD saved for reference
-    evaluation.json              # Claude's scoring + full analysis
-    CV_Siemens_Energy_...pdf     # tailored CV for this role
-    CoverLetter_Siemens_...pdf   # tailored cover letter
+  09_Acme_Brand_Manager/
+    job.txt              # full job description
+    evaluation.json      # AI scoring + full analysis
+    <NAME>_CV.pdf         # tailored CV for this role
+    <NAME>_COVERLETTER.pdf
 
 data/
-  jobs_raw.json                  # all scraped postings (cache)
-  jobs_processed.json            # all evaluated jobs with scores
+  jobs_raw.json          # all scraped postings (cache)
+  jobs_processed.json    # all evaluated jobs (dedupe)
 
-job_hunter.log                   # full run log
+job_hunter.log           # full run log
 ```
 
 ---
 
 ## Tuning
 
-All settings live in `.env` / `config.py`:
-
-| Setting | Default | Effect |
+| Setting (in `.env`) | Default | Effect |
 |---|---|---|
 | `MIN_MATCH_SCORE` | `7` | Lower to see more matches; raise for stricter filtering |
-| `SCRAPE_DELAY_SECONDS` | `3` | Increase if getting rate-limited |
-| `MAX_JOBS_PER_BOARD` | `30` | Jobs fetched per query/location combo |
-| `CLAUDE_MODEL` | `claude-sonnet-4-5-20251022` | Swap model if needed |
+| `SCRAPE_DELAY_SECONDS` | `2` | Increase if getting rate-limited |
+| `MAX_JOBS_PER_BOARD` | `15` | Jobs fetched per search |
 
-Edit `config.py` → `SEARCH_QUERIES` and `SEARCH_LOCATIONS` to tune which roles and regions get scraped.
+To change which **roles/regions** get searched, edit `inputs/QUESTIONNAIRE.md` and
+re-run `python setup.py` — or edit `inputs/profile.json` directly.
 
 ---
 
 ## Important rules
 
-- **`cv/base_cv.pdf` is sacred** — never overwritten. All tailored versions go to `applications/`.
-- **No fabrications** — Claude is explicitly instructed to only reframe real experience. Every claim in the tailored CV and cover letter is grounded in your actual CV.
+- **No fabrications** — the AI is instructed to only reframe real experience.
 - **Deduplication** — jobs already in `jobs_processed.json` are never re-evaluated.
 - **Rate limits respected** — minimum `SCRAPE_DELAY_SECONDS` between requests.
-
----
-
-## Notion database columns
-
-| Column | Type | Notes |
-|---|---|---|
-| Job Title | Title | Includes score emoji (🔥✅🟡) |
-| Company | Text | |
-| Location | Text | |
-| Match Score | Number | 1–10 |
-| Verdict | Select | STRONG_MATCH / GOOD_MATCH / etc. |
-| Status | Select | To Apply → Applied → Interview → Offer |
-| Application Link | URL | Direct link to apply |
-| Source | Select | linkedin / indeed / eurojobs / manual |
-| Date Found | Date | |
-
-Each page body contains: match summary, why it fits, career path potential, honest gaps, matched skills, CV tailoring notes.
+- **Privacy** — `.env`, `inputs/profile.json`, and any CV PDF are gitignored.
 
 ---
 
 ## Troubleshooting
 
-**LinkedIn returns no results** — LinkedIn aggressively blocks scrapers. Try:
-- Setting `LINKEDIN_EMAIL` + `LINKEDIN_PASSWORD` in `.env`
-- Using `--url` flag to manually paste job URLs instead
-
-**`KeyError: ANTHROPIC_API_KEY`** — your `.env` file is missing or the key is blank
-
-**Notion `401 Unauthorized`** — share your Notion page/database with the integration at notion.so/my-integrations
-
-**PDF looks wrong** — delete the `applications/` folder and re-run; a corrupt run can leave partial files
+- **App says "not set up yet"** → run `python setup.py`.
+- **`KeyError: GROQ_API_KEY`** → your `.env` is missing or the key is blank.
+- **LinkedIn returns nothing** → it blocks scrapers aggressively; use `--url` to
+  paste job links manually, or rely on the other boards.
+- **Notion `401`** → share your database with the integration at notion.so/my-integrations.
+- **Anything else** → check `job_hunter.log`, or ask Claude what went wrong.

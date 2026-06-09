@@ -24,7 +24,7 @@ from reportlab.platypus import (
 from reportlab.lib.enums import TA_LEFT, TA_CENTER
 
 import config
-from career_profile import SYSTEM_CONTEXT, CV_TEXT
+from career_profile import SYSTEM_CONTEXT, CV_TEXT, NAME, HEADLINE, CONTACT_LINE
 from matcher.ai_client import generate as _ai_generate
 
 logger = logging.getLogger(__name__)
@@ -61,7 +61,7 @@ def generate_tailored_cv_content(job_title: str, company: str, job_description: 
     matched_skills = evaluation.get("matched_skills", [])
 
     prompt = f"""
-You are tailoring Panagiotis Kaimasidis's CV for a specific job application.
+You are tailoring {NAME or "the candidate"}'s CV for a specific job application.
 
 TARGET ROLE: {job_title} at {company}
 KEY SKILLS THE ROLE NEEDS: {', '.join(matched_skills)}
@@ -160,14 +160,12 @@ def build_cv_pdf(cv_data: dict, output_path: Path, job_title: str, company: str)
 
     story = []
 
-    # ── Header ────────────────────────────────────────────────────────────
-    story.append(Paragraph("PANAGIOTIS KAIMASIDIS", name_style))
-    story.append(Paragraph("Mechanical &amp; Aeronautical Engineer (MSc) · Process &amp; Operations Specialist", tagline_style))
-    story.append(Paragraph(
-        "Athens, Greece &nbsp;|&nbsp; +30 6980423845 &nbsp;|&nbsp; "
-        "panagiotiskaimasidis@gmail.com &nbsp;|&nbsp; linkedin.com/in/PKaimasidis",
-        contact_style
-    ))
+    # ── Header (loaded from the candidate's profile) ──────────────────────
+    story.append(Paragraph(NAME.upper(), name_style))
+    if HEADLINE:
+        story.append(Paragraph(HEADLINE, tagline_style))
+    if CONTACT_LINE:
+        story.append(Paragraph(CONTACT_LINE.replace("|", "&nbsp;|&nbsp;"), contact_style))
     story.append(HRFlowable(width="100%", thickness=1, color=_ACCENT, spaceAfter=6))
 
     # ── Professional Summary ───────────────────────────────────────────────
@@ -229,7 +227,8 @@ def create_tailored_cv(job: object, evaluation: dict, output_dir: Path) -> tuple
         evaluation=evaluation,
     )
 
-    pdf_path = output_dir / "KAIMASIDIS_PANAGIOTIS_CV.pdf"
+    _slug = "".join(c for c in NAME.upper() if c.isalnum() or c == " ").strip().replace(" ", "_") or "CANDIDATE"
+    pdf_path = output_dir / f"{_slug}_CV.pdf"
     build_cv_pdf(cv_data, pdf_path, job.title, job.company)
 
     return pdf_path, cv_data.get("tailoring_notes", "")

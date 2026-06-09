@@ -17,8 +17,10 @@ No query/location loops — we go straight to the source and filter by keyword.
 """
 
 import hashlib
+import json
 import logging
 import time
+from pathlib import Path
 from typing import Iterator
 
 import httpx
@@ -27,6 +29,21 @@ from bs4 import BeautifulSoup
 from scraper.base import BaseJobScraper, JobPosting
 
 logger = logging.getLogger(__name__)
+
+# ── Verified ATS endpoints ─────────────────────────────────────────────────────
+# Produced by verify_workday.py — only endpoints CONFIRMED to return jobs.
+# Never guessed at scrape time; if the file is missing we fall back to the
+# legacy slug list below (and LinkedIn covers everything by company name).
+_VERIFIED_PATH = Path(__file__).parent.parent.parent / "data" / "target_companies_ats.json"
+
+
+def _load_verified() -> dict:
+    if _VERIFIED_PATH.exists():
+        try:
+            return json.loads(_VERIFIED_PATH.read_text())
+        except Exception as exc:
+            logger.warning("[company_careers] Could not read verified endpoints: %s", exc)
+    return {}
 
 # ── Target companies ──────────────────────────────────────────────────────────
 # Add / remove entries freely. slug = the Workday/Greenhouse tenant identifier.
@@ -63,7 +80,7 @@ TARGET_COMPANIES: list[dict] = [
     {"name": "Volocopter",             "ats": "lever",      "slug": "volocopter"},
 ]
 
-# Keywords to filter job titles on — aligned with Panagiotis's profile
+# Keywords to filter job titles on — aligned with the candidate's profile
 _TITLE_KEYWORDS = [
     "process engineer", "manufacturing engineer", "operations engineer",
     "production engineer", "industrial engineer", "continuous improvement",
@@ -288,11 +305,46 @@ def _scrape_lever(company: dict, max_jobs: int) -> list[JobPosting]:
     return jobs
 
 
+# ── Verified-endpoint scraper ───────────────────────────────────────────────
+
+def _scrape_verified_workday(name: str, endpoint: str, max_jobs: int) -> list[JobPosting]:
+    """Scrape a CONFIRMED Workday CXS endpoint (from verify_workday.py)."""
+    jobs: list[JobPosting] = []
+    base = endpoint.split("/wday/cxs/")[0]
+    payload = {"appliedFacets": {}, "limit": min(max_jobs * 2, 20), "offset": 0, "searchText": "engineer"}
+    try:
+        with httpx.Client(timeout=15, headers=_HEADERS, follow_redirects=True) as client:
+            resp = client.post(endpoint, json=payload)
+            if resp.status_code != 200:
+                return jobs
+            for p in resp.json().get("jobPostings", []):
+                title = p.get("title", "")
+                if not _title_matches(title):
+                    continue
+                ext = p.get("externalPath", "")
+                job_url = f"{base}{ext}" if ext.startswith("/") else ext
+                loc = p.get("locationsText", "")
+                jobs.append(JobPosting(
+                    title=title, company=name, location=str(loc),
+                    description="", url=job_url,
+                    source="company_careers", job_id=_job_id(job_url),
+                ))
+                if len(jobs) >= max_jobs:
+                    break
+        if jobs:
+            logger.info("[company_careers] ✅ %s (verified Workday) → %d jobs", name, len(jobs))
+    except Exception as exc:
+        logger.debug("[company_careers] verified Workday %s failed: %s", name, exc)
+    return jobs
+
+
 # ── Main scraper class ────────────────────────────────────────────────────────
 
 class CompanyCareerscraper(BaseJobScraper):
     """
     Scrapes career pages directly from target company ATS platforms.
+    Prioritises CONFIRMED endpoints from data/target_companies_ats.json;
+    falls back to the legacy slug list for anything not yet verified.
     Ignores query/location — goes straight to source and filters by title keywords.
     """
 
@@ -305,23 +357,43 @@ class CompanyCareerscraper(BaseJobScraper):
         """
         all_jobs: list[JobPosting] = []
 
+        # ── Phase 1: CONFIRMED endpoints (reliable, no guessing) ───────────
+        verified = _load_verified()
+        verified_names = set()
+        for name, info in verified.items():
+            verified_names.add(name)
+            ats = info.get("ats")
+            endpoint = info.get("endpoint", "")
+            try:
+                if ats == "workday":
+                    all_jobs.extend(_scrape_verified_workday(name, endpoint, self.max_jobs))
+                elif ats == "greenhouse":
+                    slug = endpoint.split("/boards/")[1].split("/")[0]
+                    all_jobs.extend(_scrape_greenhouse({"name": name, "slug": slug}, self.max_jobs))
+                elif ats == "lever":
+                    slug = endpoint.split("/postings/")[1].split("?")[0]
+                    all_jobs.extend(_scrape_lever({"name": name, "slug": slug}, self.max_jobs))
+                time.sleep(self.delay)
+            except Exception as exc:
+                logger.error("[company_careers] verified %s failed: %s", name, exc)
+
+        # ── Phase 2: Legacy slug guesses (only for non-verified companies) ──
         for company in TARGET_COMPANIES:
+            if company["name"] in verified_names:
+                continue  # already covered by a confirmed endpoint
             ats = company["ats"]
             try:
                 if ats == "workday":
-                    stubs = _scrape_workday(company, self.max_jobs)
-                    all_jobs.extend(stubs)
+                    all_jobs.extend(_scrape_workday(company, self.max_jobs))
                 elif ats == "greenhouse":
-                    # Greenhouse includes description in the listing API
-                    jobs = _scrape_greenhouse(company, self.max_jobs)
-                    all_jobs.extend(jobs)
+                    all_jobs.extend(_scrape_greenhouse(company, self.max_jobs))
                 elif ats == "lever":
-                    jobs = _scrape_lever(company, self.max_jobs)
-                    all_jobs.extend(jobs)
+                    all_jobs.extend(_scrape_lever(company, self.max_jobs))
                 time.sleep(self.delay)
             except Exception as exc:
                 logger.error("[company_careers] %s failed: %s", company["name"], exc)
 
+        logger.info("[company_careers] Total %d job stubs from company sites", len(all_jobs))
         return all_jobs
 
     def fetch_description(self, url: str) -> str:

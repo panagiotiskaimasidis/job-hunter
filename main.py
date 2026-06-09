@@ -25,6 +25,21 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
+# ── Pre-flight: make sure setup has been run, with a friendly message ─────────
+_PROFILE = Path(__file__).parent / "inputs" / "profile.json"
+if not _PROFILE.exists():
+    print(
+        "\n─────────────────────────────────────────────────────────────\n"
+        "  Almost there — this app isn't set up yet!\n"
+        "─────────────────────────────────────────────────────────────\n"
+        "  It needs to know who it's job-hunting for. To set it up:\n\n"
+        "    • Run:  python setup.py   (a friendly wizard)\n"
+        "    • Or open Claude and say: \"Set up my job hunter\"\n\n"
+        "  See START_HERE.md for the full 3-step guide.\n"
+        "─────────────────────────────────────────────────────────────\n"
+    )
+    sys.exit(1)
+
 import config
 from scraper.runner import run_scraper, load_unprocessed
 
@@ -54,6 +69,7 @@ from matcher.cv_editor import create_tailored_cv
 from matcher.cover_letter import create_cover_letter
 from notion.client import create_job_page, get_pending_doc_requests, mark_docs_generated
 from notion.feedback import read_feedback, apply_feedback_to_run
+from data.target_companies import is_target_company
 
 logging.basicConfig(
     level=logging.INFO,
@@ -111,6 +127,15 @@ def process_job(job: JobPosting) -> dict | None:
     score = evaluation.get("score", 0)
     verdict = evaluation.get("verdict", "UNKNOWN")
     company_tier = evaluation.get("company_tier", "UNKNOWN")
+
+    # ── Target-company booster ────────────────────────────────────────────
+    # If the hiring company is one of our 500+ target companies, it is by
+    # definition a top corp / notable employer — never let it be SKIP'd.
+    if is_target_company(job.company) and company_tier == "SKIP":
+        logger.info("  → Target company '%s' — overriding SKIP → TOP_CORP", job.company)
+        company_tier = "TOP_CORP"
+        evaluation["company_tier"] = "TOP_CORP"
+
     logger.info("  → Score %d/10 [%s] | Company: %s", score, verdict, company_tier)
 
     # Skip unknown SMEs and recruitment agencies outright
@@ -329,7 +354,7 @@ def scrape_single_url(url: str) -> JobPosting | None:
 # ── Entry point ───────────────────────────────────────────────────────────────
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Panagiotis's Job Hunter")
+    parser = argparse.ArgumentParser(description="Job Hunter — AI-powered job search & application assistant")
     parser.add_argument("--scrape-only",    action="store_true", help="Scrape only, skip evaluation")
     parser.add_argument("--evaluate-only",  action="store_true", help="Evaluate scraped jobs, skip scraping")
     parser.add_argument("--generate-docs",  action="store_true", help="Generate CV+CL for Notion jobs with Generate Docs = Yes")
