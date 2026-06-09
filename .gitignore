@@ -1,0 +1,24 @@
+# Secrets — NEVER commit
+.env
+
+# Generated output
+applications/
+data/jobs_raw.json
+data/feedback_cache.json
+job_hunter.log
+/tmp/jh_*.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# IDE
+.idea/
+.vscode/

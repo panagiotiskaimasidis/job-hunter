@@ -1,0 +1,121 @@
+name: 🎯 Daily Job Hunt
+
+on:
+  schedule:
+    # 07:00 UTC = 10:00 Athens (EEST, summer) / 09:00 Athens (EET, winter)
+    - cron: "0 7 * * 1-5"   # Monday–Friday only
+  workflow_dispatch:          # also lets you trigger manually from GitHub UI
+
+jobs:
+  hunt:
+    name: Scrape → Evaluate → Notion
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Write .env from secrets
+        run: |
+          cat > .env << EOF
+          GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
+          NOTION_API_KEY=${{ secrets.NOTION_API_KEY }}
+          NOTION_DATABASE_ID=${{ secrets.NOTION_DATABASE_ID }}
+          GROQ_MODEL=llama-3.3-70b-versatile
+          GEMINI_MODEL=gemini-2.0-flash
+          MIN_MATCH_SCORE=8
+          SCRAPE_DELAY_SECONDS=1
+          MAX_JOBS_PER_BOARD=15
+          SCRAPE_WORKERS=4
+          EOF
+
+      - name: Restore dedup cache
+        uses: actions/cache@v4
+        with:
+          path: data/jobs_processed.json
+          key: jobs-processed-${{ github.run_id }}
+          restore-keys: jobs-processed-
+
+      - name: Run job hunter
+        run: python main.py
+
+      - name: Save dedup cache
+        uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: data/jobs_processed.json
+          key: jobs-processed-${{ github.run_id }}
+
+      - name: Upload run log
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: job-hunter-log-${{ github.run_number }}
+          path: job_hunter.log
+          retention-days: 7
+
+  generate-docs:
+    name: Generate Docs (Notion-triggered)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # Runs separately — only generates CVs for jobs you've approved in Notion
+    needs: hunt
+    if: always()   # run even if hunt had errors
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Write .env from secrets
+        run: |
+          cat > .env << EOF
+          GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
+          NOTION_API_KEY=${{ secrets.NOTION_API_KEY }}
+          NOTION_DATABASE_ID=${{ secrets.NOTION_DATABASE_ID }}
+          GROQ_MODEL=llama-3.3-70b-versatile
+          GEMINI_MODEL=gemini-2.0-flash
+          MIN_MATCH_SCORE=8
+          SCRAPE_DELAY_SECONDS=1
+          MAX_JOBS_PER_BOARD=15
+          SCRAPE_WORKERS=4
+          EOF
+
+      - name: Restore applications cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            applications/
+            data/jobs_processed.json
+          key: applications-${{ github.run_id }}
+          restore-keys: applications-
+
+      - name: Check for pending doc requests and generate
+        run: python main.py --generate-docs
+
+      - name: Upload generated PDFs
+        uses: actions/upload-artifact@v4
+        with:
+          name: applications-${{ github.run_number }}
+          path: applications/
+          retention-days: 30

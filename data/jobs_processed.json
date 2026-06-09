@@ -1,0 +1,1422 @@
+[
+  {
+    "job_id": "32f1bbcb300d",
+    "title": "Process Engineer",
+    "company": "Unknown",
+    "location": "Unknown",
+    "url": "https://ie.linkedin.com/jobs/view/process-engineer-at-psc-biotech-corporation-4425626193",
+    "source": "manual",
+    "score": 4,
+    "verdict": "WEAK_MATCH",
+    "notion_url": null,
+    "cv_path": null,
+    "cover_letter_path": null,
+    "one_line_summary": "A specialized biotech wet-lab role requiring a biology background, mismatched with his mechanical, aero, and industrial engineering profile.",
+    "why_it_fits": "It leverages his rigorous mathematical process modeling skills from his Master's thesis and his hands-on experience in Root Cause Analysis (RCA) from both P&G and the Hellenic Airforce. The consulting framework matches his desire for diverse client-facing environments.",
+    "why_it_doesnt_fit": "The role strictly requires a degree in Biological Sciences/Chemical Engineering and hands-on laboratory experience with biologics, downstream technology, and buffer preparation, which lie completely outside his mechanical/aeronautical expertise.",
+    "matched_skills": [
+      "Process Optimisation",
+      "Root Cause Analysis (RCA)",
+      "Process Modeling",
+      "Data Analysis",
+      "Continuous Improvement"
+    ],
+    "skill_gaps": [
+      "Biologics/Drug Substance Manufacturing",
+      "Biological Sciences / Biochemistry",
+      "Buffer Preparation",
+      "Downstream Technology",
+      "Design of Experiments (DOE) Software"
+    ],
+    "career_vision_alignment": "While providing consulting exposure, this 11-month contract role focuses heavily on localized, routine laboratory tasks like buffer preparation rather than high-impact, cross-functional engineering, digital automation, or global operations.",
+    "career_path_potential": "Leads to specialized technical roles within pharmaceutical manufacturing or life sciences consulting, but limits immediate cross-industry mobility into elite tech, aerospace, or strategic management consulting.",
+    "suggested_cv_angles": [
+      "Lead with the Master's thesis process modeling and simulation work to demonstrate strong analytical and modeling capabilities.",
+      "Emphasize P&G process optimization, data-driven controls, and RCA to show systematic troubleshooting skills."
+    ],
+    "salary_assessment": "Not stated; as an 11-month contract role, it is highly unlikely to align with his long-term permanent 6-figure career trajectory.",
+    "job_title": "Process Engineer"
+  },
+  {
+    "job_id": "32f1bbcb300d",
+    "title": "Process Engineer",
+    "company": "Unknown",
+    "location": "Unknown",
+    "url": "https://ie.linkedin.com/jobs/view/process-engineer-at-psc-biotech-corporation-4425626193",
+    "source": "manual",
+    "score": 4,
+    "verdict": "WEAK_MATCH",
+    "notion_url": null,
+    "cv_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/04_Unknown_Process_Engineer/CV_Unknown_Process_Engineer.pdf",
+    "cover_letter_path": null,
+    "one_line_summary": "A highly specialized biotech role requiring a biochemical background, mismatching his mechanical and digital manufacturing expertise.",
+    "why_it_fits": "He brings strong transferable process optimization, root cause analysis (RCA), and numerical process modeling skills. His experience implementing automated controls and data-driven workflows at P&G aligns well with the continuous improvement and technical troubleshooting aspects of the role.",
+    "why_it_doesnt_fit": "He lacks the required degree in Biological Sciences or Chemical Engineering and has zero experience in drug substance biologics, downstream technology, or wet-lab buffer preparation.",
+    "matched_skills": [
+      "Process Optimisation",
+      "Root Cause Analysis (RCA)",
+      "Process Modeling",
+      "Data Analysis",
+      "Continuous Improvement"
+    ],
+    "skill_gaps": [
+      "Biologics Drug Substance Manufacturing",
+      "Downstream Technology",
+      "Biochemical Engineering",
+      "Design of Experiments (DoE) Software (JMP/DesignExpert)",
+      "Buffer Preparation"
+    ],
+    "career_vision_alignment": "While it offers consultancy exposure and potential global client-site mobility, the highly specialized laboratory/wet-lab setting restricts him to bio-pharma operations, diverting him from his goal of leading high-impact advanced manufacturing, industrial AI, or aerospace projects.",
+    "career_path_potential": "This role positions him as a technical specialist within pharmaceutical Manufacturing Science & Technology (MS&T). However, the 11-month contract nature and niche focus limit rapid advancement into broader cross-functional or high-level global operations leadership.",
+    "suggested_cv_angles": [
+      "Lead with his Procter & Gamble internship, specifically highlighting his redesign of chemical storage/fluid workflows and inline automated controls.",
+      "Emphasize his MSc thesis numerical modeling in C, framing it as highly transferable expertise in process simulation and parameter optimization."
+    ],
+    "salary_assessment": "not stated",
+    "job_title": "Process Engineer"
+  },
+  {
+    "job_id": "32f1bbcb300d",
+    "title": "Process Engineer",
+    "company": "PSC Biotech® Corporation",
+    "location": "Unknown",
+    "url": "https://ie.linkedin.com/jobs/view/process-engineer-at-psc-biotech-corporation-4425626193",
+    "source": "manual",
+    "score": 4,
+    "verdict": "WEAK_MATCH",
+    "notion_url": null,
+    "cv_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/04_PSC_Biotech__Corporation_Process_Engineer/CV.pdf",
+    "cover_letter_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/04_PSC_Biotech__Corporation_Process_Engineer/CoverLetter.pdf",
+    "one_line_summary": "Highly specialized biopharma role requiring a biology/chemistry background, misaligned with Panagiotis's mechanical, aerospace, and digital-heavy profile.",
+    "why_it_fits": "He possesses strong transferable skills in process optimization, Root Cause Analysis (RCA), and data-driven process modeling from his P&G internship and Master's thesis. His experience with automated systems and continuous improvement methodologies like Lean aligns with their technical support needs.",
+    "why_it_doesnt_fit": "The role strictly demands a degree in Biological Sciences or Chemical Engineering, alongside wet-lab experience in biologics, downstream technology, and buffer preparation, which he does not have.",
+    "matched_skills": [
+      "Process Optimisation",
+      "Root Cause Analysis (RCA)",
+      "Continuous Improvement",
+      "Process Modeling",
+      "Data Analysis"
+    ],
+    "skill_gaps": [
+      "Biologics Drug Substance Manufacturing",
+      "Downstream Technology",
+      "Design of Experiments (DOE) via JMP/DesignExpert",
+      "Biological/Chemical Engineering Degree",
+      "Buffer Preparation"
+    ],
+    "career_vision_alignment": "While the global consultancy aspect of PSC Biotech matches his mobility goals, this specific 11-month lab-based contract role is too narrow. It isolates him in specialized pharmaceutical lab operations rather than placing him on a fast-track, high-leverage engineering or strategic consulting path.",
+    "career_path_potential": "Leads to specialized technical roles within pharmaceutical manufacturing (MS&T, Validation, or Quality Control), but limits exit opportunities to the life sciences sector rather than broader deep tech or elite management consulting.",
+    "suggested_cv_angles": [
+      "Lead with the Procter & Gamble internship, emphasizing chemical/fluid storage design, automated sensor loops, and process optimization.",
+      "Highlight the numerical process modeling from his Master's thesis to showcase his capability to handle complex simulation and data analysis.",
+      "Emphasize his Root Cause Analysis (RCA) experience from both the Hellenic Airforce and P&G to match their investigation requirements."
+    ],
+    "salary_assessment": "not stated",
+    "job_title": "Process Engineer"
+  },
+  {
+    "job_id": "32f1bbcb300d",
+    "title": "Process Engineer",
+    "company": "PSC Biotech® Corporation",
+    "location": "Unknown",
+    "url": "https://ie.linkedin.com/jobs/view/process-engineer-at-psc-biotech-corporation-4425626193",
+    "source": "manual",
+    "score": 4,
+    "verdict": "WEAK_MATCH",
+    "notion_url": "https://app.notion.com/p/Process-Engineer-37959fcfeadd811aa88dc7ea575e2122",
+    "cv_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/04_PSC_Biotech__Corporation_Process_Engineer/CV.pdf",
+    "cover_letter_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/04_PSC_Biotech__Corporation_Process_Engineer/CoverLetter.pdf",
+    "one_line_summary": "An 11-month pharma contract requiring biological sciences expertise, misaligned with his mechanical background and high-growth career goals.",
+    "why_it_fits": "It leverages his core competencies in process optimization, Root Cause Analysis (RCA), and continuous improvement methodologies. His experience with automated feedback loops and process modeling matches the analytical requirements of the role.",
+    "why_it_doesnt_fit": "He lacks the required Biological Sciences or Chemical Engineering degree and wet-lab biologics/bioprocessing experience. Additionally, an 11-month contract does not offer the permanent, fast-track trajectory he targets.",
+    "matched_skills": [
+      "Process Optimisation",
+      "Root Cause Analysis (RCA)",
+      "Process Modeling",
+      "Data Analysis"
+    ],
+    "skill_gaps": [
+      "Biological Sciences",
+      "Drug Substance Manufacturing",
+      "Downstream Technology",
+      "Buffer Preparation",
+      "Statistical DOE software (JMP/DesignExpert)"
+    ],
+    "career_vision_alignment": "A short-term contract role in pharma lab operations limits his global mobility and strategic negotiation goals. It does not position him for the high-impact, elite multidisciplinary leadership tracks he desires.",
+    "career_path_potential": "It could transition into a permanent consulting or validation engineering role in life sciences, but risks pigeonholing him into localized biotech operations.",
+    "suggested_cv_angles": [
+      "Position his MSc process modeling thesis to demonstrate rapid adaptation to complex physical/chemical simulations.",
+      "Lead with the P&G internship, focusing on fluid workflow redesign, process optimization, and automated control loops."
+    ],
+    "salary_assessment": "Not stated, and as a fixed 11-month contract, it is highly unlikely to align with a top-tier global graduate salary trajectory.",
+    "job_title": "Process Engineer"
+  },
+  {
+    "job_id": "9ec8fc34f9e5",
+    "title": "Process Engineer",
+    "company": "Morgan McKinley",
+    "location": "Dublin, County Dublin, Ireland",
+    "url": "https://ie.linkedin.com/jobs/view/process-engineer-at-morgan-mckinley-4425261429",
+    "source": "linkedin",
+    "score": 8,
+    "verdict": "STRONG_MATCH",
+    "notion_url": "https://app.notion.com/p/Process-Engineer-37959fcfeadd813182eaefe91e56f602",
+    "cv_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/08_Morgan_McKinley_Process_Engineer/CV.pdf",
+    "cover_letter_path": null,
+    "one_line_summary": "An elite biopharma MS&T role in Dublin leveraging his P&G process optimization, RCA skills, and French language advantage.",
+    "why_it_fits": "His P&G internship directly demonstrates process optimization, automation loops, and capacity expansion of fluid workflows. Additionally, his French proficiency (DELF B2) is a noted advantage for Ipsen (a French multinational), and his military-grade RCA experience aligns with their troubleshooting needs.",
+    "why_it_doesnt_fit": "He lacks direct prior experience in a highly regulated cGMP pharmaceutical environment, with his background being in FMCG, health & safety, and aerospace.",
+    "matched_skills": [
+      "Process Optimisation",
+      "Root Cause Analysis (RCA)",
+      "Process Automation",
+      "Data Analytics",
+      "French (DELF B2)",
+      "Continuous Improvement"
+    ],
+    "skill_gaps": [
+      "cGMP Regulations",
+      "Validation Protocols (IQ/OQ/PQ)",
+      "HAZOPs"
+    ],
+    "career_vision_alignment": "Ipsen is a global biopharma leader, offering the complex, highly regulated technical challenges he craves. The 20% travel component and Dublin location perfectly match his desire for global mobility, elite teams, and rapid career progression.",
+    "career_path_potential": "This role positions him to transition into Senior MS&T Engineer, Global Technology Transfer Lead, or Operational Excellence Director roles within the highly lucrative global biopharmaceutical sector.",
+    "suggested_cv_angles": [
+      "Lead with the P&G chemical storage and fluid workflow redesign to prove process optimization and capacity expansion.",
+      "Highlight his French DELF B2 qualification prominently to appeal to the French-headquartered corporate structure of Ipsen.",
+      "Frame his Hellenic Airforce experience as elite, high-pressure troubleshooting and Root Cause Analysis (RCA)."
+    ],
+    "salary_assessment": "Not stated, but Dublin-based MS&T Process Engineer roles in pharma typically command highly competitive compensation packages (€55k-€75k base) with a fast-track trajectory toward six figures.",
+    "job_title": "Process Engineer"
+  },
+  {
+    "job_id": "8253a2e31043",
+    "title": "Process Engineer 1 - MT",
+    "company": "OpSec Security",
+    "location": "Żejtun, Zejtun, Malta",
+    "url": "https://mt.linkedin.com/jobs/view/process-engineer-1-mt-at-opsec-security-4425238893",
+    "source": "linkedin",
+    "score": 6,
+    "verdict": "PARTIAL_MATCH",
+    "notion_url": null,
+    "cv_path": null,
+    "cover_letter_path": null,
+    "company_tier": "NOTABLE_STARTUP",
+    "one_line_summary": "Strong technical alignment with his P&G experience, but the entry-level Malta location limits salary and global trajectory.",
+    "why_it_fits": "Directly leverages his P&G process optimization internship, specifically his work on workflow redesigns and root cause analysis. His master's level analytical training prepares him perfectly for their continuous improvement, FMEA, and trial-costing requirements.",
+    "why_it_doesnt_fit": "The 'Process Engineer 1' title is entry-level, and a localized plant role in Malta cannot support his rapid 6-figure salary trajectory or high-intensity global career vision.",
+    "matched_skills": [
+      "Process Optimisation",
+      "Root Cause Analysis (RCA)",
+      "QA Automation",
+      "Run to Standard (R2S)",
+      "Asset Reliability"
+    ],
+    "skill_gaps": [
+      "APQP (Advanced Product Quality Planning)",
+      "FMEA",
+      "Product Costing"
+    ],
+    "career_vision_alignment": "This role offers solid foundational floor experience in a highly specialized sector (authentication security). However, it lacks the elite global mobility, high-velocity promotion structure, and rapid financial scaling he is targeting.",
+    "career_path_potential": "Serves as a stepping stone to a mid-level Process or Quality Engineer role within Crane Authentication, but further upward trajectory would require relocating out of the Malta facility.",
+    "suggested_cv_angles": [
+      "Lead with the P&G internship, emphasizing chemical storage redesigns, automated QC systems, and floor-level optimization.",
+      "Highlight his MSc thesis C-based numerical simulations as proof of exceptional analytical and predictive modeling skills applicable to process trial planning."
+    ],
+    "salary_assessment": "Not stated, but entry-level engineering salaries in Malta typically range from €25,000 to €35,000, falling drastically short of his high-earner target.",
+    "job_title": "Process Engineer 1 - MT"
+  },
+  {
+    "job_id": "32f1bbcb300d",
+    "title": "Process Engineer",
+    "company": "PSC Biotech® Corporation",
+    "location": "Unknown",
+    "url": "https://ie.linkedin.com/jobs/view/process-engineer-at-psc-biotech-corporation-4425626193",
+    "source": "manual",
+    "score": 7,
+    "verdict": "STRONG_MATCH",
+    "notion_url": "https://app.notion.com/p/Process-Engineer-37959fcfeadd81b0a437dab6b4094541",
+    "cv_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/07_PSC_Biotech__Corporation_Process_Engineer/CV.pdf",
+    "cover_letter_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/07_PSC_Biotech__Corporation_Process_Engineer/CoverLetter.pdf",
+    "company_tier": "NOTABLE_STARTUP",
+    "one_line_summary": "Process Engineer at biotech firm",
+    "why_it_fits": "Panagiotis's experience in process optimization, root cause analysis, and data-driven controls aligns with the role's requirements. His background in mechanical and aeronautical engineering also provides a solid foundation for process engineering in biotech. Additionally, his experience in executing experimental design and data analysis can be applied to this role.",
+    "why_it_doesnt_fit": "The role requires a Master's degree in Biological Sciences/Chemistry, which is not Panagiotis's background. However, his experience and skills can still be relevant to the position.",
+    "matched_skills": [
+      "process optimization",
+      "root cause analysis",
+      "data analysis",
+      "experimental design"
+    ],
+    "skill_gaps": [
+      "biological sciences",
+      "chemistry"
+    ],
+    "career_vision_alignment": "This role advances Panagiotis's 10-year goals by providing a challenging and dynamic environment where he can apply his skills and experience to solve complex problems. The company's global operations and diverse client base also align with his desire for a global, mobile role. The opportunity to work with a talented cohort of professionals in the biotech industry can also facilitate his growth and development.",
+    "career_path_potential": "In 3-5 years, this role can lead to senior positions in process engineering, technical leadership, or even executive roles in the biotech industry. The experience and skills gained in this position can also be applied to other industries, such as aerospace or advanced manufacturing, which aligns with Panagiotis's career vision.",
+    "suggested_cv_angles": [
+      "Highlight process optimization and root cause analysis experience",
+      "Emphasize data analysis and experimental design skills",
+      "Tailor education and training to biotech industry"
+    ],
+    "salary_assessment": "not stated",
+    "job_title": "Process Engineer"
+  },
+  {
+    "score": 0,
+    "verdict": "SKIPPED",
+    "company_tier": "SKIP",
+    "job_id": "9c29a97afce4",
+    "title": "New Graduate Project Engineer I - Transportation Design",
+    "company": "Timmons Group",
+    "location": "Raleigh, NC",
+    "url": "https://www.linkedin.com/jobs/view/new-graduate-project-engineer-i-transportation-design-at-timmons-group-4418000730",
+    "source": "linkedin"
+  },
+  {
+    "job_id": "4bdabf1aa553",
+    "title": "Process Engineer",
+    "company": "PSC Biotech® Corporation",
+    "location": "County Dublin, Ireland",
+    "url": "https://ie.linkedin.com/jobs/view/process-engineer-at-psc-biotech%C2%AE-corporation-4425626193",
+    "source": "linkedin",
+    "score": 7,
+    "verdict": "STRONG_MATCH",
+    "notion_url": "https://app.notion.com/p/Process-Engineer-37959fcfeadd812da964e6423ba445a8",
+    "cv_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/07_PSC_Biotech__Corporation_Process_Engineer/CV.pdf",
+    "cover_letter_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/07_PSC_Biotech__Corporation_Process_Engineer/CoverLetter.pdf",
+    "company_tier": "NOTABLE_STARTUP",
+    "one_line_summary": "Process Engineer at PSC Biotech, strong technical fit",
+    "why_it_fits": "Panagiotis's experience in process optimization, Root Cause Analysis, and Lean Six Sigma methodologies aligns with the role's requirements. His background in mechanical and aeronautical engineering, as well as his experience in designing and executing experimental programs, also matches the job description. Additionally, his work in quality control and assurance, such as deploying computer vision quality-control systems, demonstrates his ability to work in a regulated environment.",
+    "why_it_doesnt_fit": "The role requires a Master's degree in Biological Sciences/Chemistry, which is not Panagiotis's background, although his experience in engineering and process development can be transferable.",
+    "matched_skills": [
+      "Process Optimization",
+      "Root Cause Analysis",
+      "Lean Six Sigma",
+      "Experimental Design",
+      "Data Analysis"
+    ],
+    "skill_gaps": [
+      "Biological Sciences/Chemistry background"
+    ],
+    "career_vision_alignment": "This role advances Panagiotis's 10-year goals by providing him with the opportunity to work on high-impact engineering problems, collaborate with talented professionals, and develop his skills in a fast-paced and dynamic environment. The company's global operations and diverse client base also align with his desire for global mobility and exposure to different industries.",
+    "career_path_potential": "In 3-5 years, this role can lead to senior engineering or leadership positions in the biotech or pharmaceutical industry, where Panagiotis can apply his technical expertise and business acumen to drive innovation and growth. He can also explore opportunities in management consulting, where his analytical and problem-solving skills can be valuable assets.",
+    "suggested_cv_angles": [
+      "Highlight process optimization and Root Cause Analysis experience",
+      "Emphasize transferable skills from mechanical and aeronautical engineering background",
+      "Include relevant coursework or projects from Master's program"
+    ],
+    "salary_assessment": "not stated",
+    "job_title": "Process Engineer"
+  },
+  {
+    "score": 0,
+    "verdict": "SKIPPED",
+    "company_tier": "SKIP",
+    "job_id": "85d481b49a37",
+    "title": "Process engineer",
+    "company": "Vulcain Engineering Group | Belgium",
+    "location": "Brabant, Walloon Region, Belgium",
+    "url": "https://be.linkedin.com/jobs/view/process-engineer-at-vulcain-engineering-group-belgium-4421955981",
+    "source": "linkedin"
+  },
+  {
+    "score": 0,
+    "verdict": "SKIPPED",
+    "company_tier": "SKIP",
+    "job_id": "cbc17b75cbff",
+    "title": "Process Engineer (Ref.3296)",
+    "company": "Jobcare BV",
+    "location": "Hamont-Achel, Flemish Region, Belgium",
+    "url": "https://be.linkedin.com/jobs/view/process-engineer-ref-3296-at-jobcare-bv-4383734255",
+    "source": "linkedin"
+  },
+  {
+    "job_id": "75e0fc0f2647",
+    "title": "Process / Mechanical Engineer",
+    "company": "ARANER",
+    "location": "Madrid, Community of Madrid, Spain",
+    "url": "https://es.linkedin.com/jobs/view/process-mechanical-engineer-at-araner-4425468644",
+    "source": "linkedin",
+    "score": 8,
+    "verdict": "STRONG_MATCH",
+    "notion_url": "https://app.notion.com/p/Process-Mechanical-Engineer-37959fcfeadd81d7a20ac45551758be3",
+    "cv_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/08_ARANER_Process___Mechanical_Engineer/CV.pdf",
+    "cover_letter_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/08_ARANER_Process___Mechanical_Engineer/CoverLetter.pdf",
+    "company_tier": "NOTABLE_STARTUP",
+    "one_line_summary": "Process/Mechanical Engineer at ARANER",
+    "why_it_fits": "Panagiotis's experience in process optimization, mechanical engineering, and project management at Procter & Gamble, as well as his master's thesis on additive manufacturing, align with the role's requirements. His skills in process engineering, mechanical design, and data analysis are also relevant. Additionally, his experience in managing budgets and operational expenditure controls at EUROAVIA demonstrates his ability to handle multiple tasks and collaborate effectively in a team.",
+    "why_it_doesnt_fit": "The role requires excellent communication skills in Spanish, which is not mentioned in Panagiotis's CV, although he is proficient in English and French.",
+    "matched_skills": [
+      "Process Optimization",
+      "Mechanical Design",
+      "Data Analysis",
+      "Project Management"
+    ],
+    "skill_gaps": [
+      "Spanish language proficiency"
+    ],
+    "career_vision_alignment": "This role advances Panagiotis's 10-year goals by providing a global, mobile role with opportunities for travel and relocation, as well as a chance to work on complex engineering projects with a dynamic team. The role also aligns with his desire to solve exceptionally hard, high-impact engineering problems and be part of an innovative engineering journey.",
+    "career_path_potential": "In 3-5 years, this role could lead to senior engineering positions or leadership roles within ARANER, or even opportunities in top-tier consulting or engineering firms. Panagiotis could also leverage his experience to transition into related fields such as management consulting, advanced manufacturing, or energy.",
+    "suggested_cv_angles": [
+      "Lead with Procter & Gamble experience",
+      "Highlight master's thesis on additive manufacturing",
+      "Emphasize budget management and team collaboration skills"
+    ],
+    "salary_assessment": "not stated",
+    "job_title": "Process / Mechanical Engineer"
+  },
+  {
+    "score": 0,
+    "verdict": "SKIPPED",
+    "company_tier": "SKIP",
+    "job_id": "2e2d10cf1c4c",
+    "title": "Process Engineer",
+    "company": "Keel Solution",
+    "location": "Lviv, Ukraine",
+    "url": "https://ua.linkedin.com/jobs/view/process-engineer-at-keel-solution-4425475101",
+    "source": "linkedin"
+  },
+  {
+    "score": 0,
+    "verdict": "SKIPPED",
+    "company_tier": "SKIP",
+    "job_id": "6d49491ae32a",
+    "title": "Process Engineer",
+    "company": "Triangle Recruitment CZ s.r.o.",
+    "location": "Mladá Boleslav, Central Bohemia, Czechia",
+    "url": "https://cz.linkedin.com/jobs/view/process-engineer-at-triangle-recruitment-cz-s-r-o-4425451590",
+    "source": "linkedin"
+  },
+  {
+    "score": 0,
+    "verdict": "SKIPPED",
+    "company_tier": "SKIP",
+    "job_id": "f9711ae1c741",
+    "title": "Process Engineer",
+    "company": "Looper Engineering",
+    "location": "Eindhoven, North Brabant, Netherlands",
+    "url": "https://nl.linkedin.com/jobs/view/process-engineer-at-looper-engineering-4425467451",
+    "source": "linkedin"
+  },
+  {
+    "job_id": "48f0948530aa",
+    "title": "Industrialization Process Engineer",
+    "company": "VEGA Chargers",
+    "location": "Barberà del Vallès, Catalonia, Spain",
+    "url": "https://es.linkedin.com/jobs/view/industrialization-process-engineer-at-vega-chargers-4425250616",
+    "source": "linkedin",
+    "score": 7,
+    "verdict": "STRONG_MATCH",
+    "notion_url": "https://app.notion.com/p/Industrialization-Process-Engineer-37959fcfeadd81db87fdc0bca6a00e6c",
+    "cv_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/07_VEGA_Chargers_Industrialization_Process_Engineer/CV.pdf",
+    "cover_letter_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/07_VEGA_Chargers_Industrialization_Process_Engineer/CoverLetter.pdf",
+    "company_tier": "NOTABLE_STARTUP",
+    "one_line_summary": "Industrialization Process Engineer at VEGA Chargers",
+    "why_it_fits": "Panagiotis's experience in process optimization, manufacturing engineering, and supplier coordination at Procter & Gamble and his knowledge of lean manufacturing principles align with the role's requirements. His background in mechanical and aeronautical engineering also matches the company's focus on designing and manufacturing fast chargers for electric vehicles.",
+    "why_it_doesnt_fit": "The role requires a minimum of 2 years of experience in industrialization engineering, which is slightly more than Panagiotis's direct experience, but his related experience and skills can still be applicable.",
+    "matched_skills": [
+      "Process Optimization",
+      "Manufacturing Engineering",
+      "Supplier Coordination",
+      "Lean Manufacturing"
+    ],
+    "skill_gaps": [
+      "Direct experience with industrialization engineering"
+    ],
+    "career_vision_alignment": "This role advances Panagiotis's 10-year goals by providing him with the opportunity to work on high-impact engineering problems, be part of a fast-paced and innovative environment, and collaborate with cross-functional teams. The company's focus on sustainability and electric vehicles also aligns with his desire to work on projects with visible world impact.",
+    "career_path_potential": "This role can lead to senior engineering positions or leadership roles in manufacturing and operations, and potentially open doors to top-tier companies in the industry. Panagiotis can also develop his skills in process optimization, industrialization, and supplier coordination, making him a more competitive candidate for future roles.",
+    "suggested_cv_angles": [
+      "Highlight process optimization experience at Procter & Gamble",
+      "Emphasize knowledge of lean manufacturing principles"
+    ],
+    "salary_assessment": "not stated",
+    "job_title": "Industrialization Process Engineer"
+  },
+  {
+    "score": 0,
+    "verdict": "SKIPPED",
+    "company_tier": "SKIP",
+    "job_id": "e57cd93ba9ac",
+    "title": "Lead Process Engineer",
+    "company": "Dynamic Futures",
+    "location": "Dublin, County Dublin, Ireland",
+    "url": "https://ie.linkedin.com/jobs/view/lead-process-engineer-at-dynamic-futures-4425265297",
+    "source": "linkedin"
+  },
+  {
+    "score": 0,
+    "verdict": "SKIPPED",
+    "company_tier": "SKIP",
+    "job_id": "0915d44b15a7",
+    "title": "Process Engineer Life Sciences",
+    "company": "BIMONA",
+    "location": "Puurs, Flemish Region, Belgium",
+    "url": "https://be.linkedin.com/jobs/view/process-engineer-life-sciences-at-bimona-4425458673",
+    "source": "linkedin"
+  },
+  {
+    "score": 0,
+    "verdict": "SKIPPED",
+    "company_tier": "SKIP",
+    "job_id": "7d0db813af9c",
+    "title": "GRADUATE PROGRAM TRANSPORT",
+    "company": "STEF",
+    "location": "Les Arcs, Provence-Alpes-Côte d'Azur, France",
+    "url": "https://fr.linkedin.com/jobs/view/graduate-program-transport-at-stef-4425483242",
+    "source": "linkedin"
+  },
+  {
+    "job_id": "1333f1a6f040",
+    "title": "Graduate Project Engineer",
+    "company": "Veolia | UK",
+    "location": "Fife, Scotland, United Kingdom",
+    "url": "https://uk.linkedin.com/jobs/view/graduate-project-engineer-at-veolia-uk-4425061737",
+    "source": "linkedin",
+    "score": 7,
+    "verdict": "STRONG_MATCH",
+    "notion_url": "https://app.notion.com/p/Graduate-Project-Engineer-37959fcfeadd81ba8028c66fa56b0849",
+    "cv_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/07_Veolia___UK_Graduate_Project_Engineer/CV.pdf",
+    "cover_letter_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/07_Veolia___UK_Graduate_Project_Engineer/CoverLetter.pdf",
+    "company_tier": "TOP_CORP",
+    "one_line_summary": "Graduate Project Engineer at Veolia UK",
+    "why_it_fits": "Panagiotis' experience in process optimization, project management, and engineering internships aligns with the role's requirements. His skills in problem-solving, communication, and stakeholder management are also highlighted in the job posting. Additionally, his master's thesis in Mechanical & Aeronautical Engineering demonstrates his ability to work on complex projects.",
+    "why_it_doesnt_fit": "The role is based in a single location, which may not align with Panagiotis' desire for global mobility and travel. The salary, although not explicitly stated as a concern, is £30,000, which may not meet his 6-figure target.",
+    "matched_skills": [
+      "process optimization",
+      "project management",
+      "problem-solving",
+      "communication",
+      "stakeholder management"
+    ],
+    "skill_gaps": [
+      "driving licence"
+    ],
+    "career_vision_alignment": "This role advances Panagiotis' 10-year goals by providing hands-on experience in strategic projects, developing essential personal and professional skills, and offering opportunities for growth and development. The company's commitment to ecological transformation and inclusive culture also aligns with his values. However, the single-location aspect of the role may not fully align with his desire for global mobility.",
+    "career_path_potential": "This role has the potential to lead to senior project management positions, operations management, or even executive roles within Veolia or other top-tier companies. The experience and skills gained in this role can also be transferable to other industries, such as aerospace, advanced manufacturing, or management consulting.",
+    "suggested_cv_angles": [
+      "Procter & Gamble project management experience",
+      "New Municipality Court of Piraeus health and safety engineering experience",
+      "Master's thesis in Mechanical & Aeronautical Engineering"
+    ],
+    "salary_assessment": "£30,000, which is below his 6-figure target",
+    "job_title": "Graduate Project Engineer"
+  },
+  {
+    "job_id": "e671f7a692c1",
+    "title": "Working student process engineer",
+    "company": "Siemens Gamesa",
+    "location": "Erlangen, Bavaria, Germany",
+    "url": "https://de.linkedin.com/jobs/view/working-student-process-engineer-at-siemens-gamesa-4415633029",
+    "source": "linkedin",
+    "score": 7,
+    "verdict": "STRONG_MATCH",
+    "notion_url": "https://app.notion.com/p/Working-student-process-engineer-37959fcfeadd810281ebd6b923fd30e6",
+    "cv_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/07_Siemens_Gamesa_Working_student_process_engineer/CV.pdf",
+    "cover_letter_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/07_Siemens_Gamesa_Working_student_process_engineer/CoverLetter.pdf",
+    "company_tier": "TOP_CORP",
+    "one_line_summary": "Process engineer role at Siemens Energy",
+    "why_it_fits": "Panagiotis's experience in process optimization, loss and waste reduction, and root cause analysis aligns with the role's requirements. His background in mechanical and aeronautical engineering is also relevant. Additionally, his experience with Siemens Teamcenter (PLM) is a plus.",
+    "why_it_doesnt_fit": "The role is a working student position, which may not align with Panagiotis's career vision of having a full-time, high-impact role with a 6-figure salary trajectory.",
+    "matched_skills": [
+      "Process Optimization",
+      "Root Cause Analysis",
+      "Siemens Teamcenter (PLM)"
+    ],
+    "skill_gaps": [
+      "Artificial Intelligence (AI) expertise",
+      "Microsoft 365"
+    ],
+    "career_vision_alignment": "This role advances Panagiotis's 10-year goals by providing experience in process engineering, exposure to a global corporation, and opportunities to work on innovative projects. However, the working student position may not provide the same level of challenge and growth as a full-time role.",
+    "career_path_potential": "This role could lead to a full-time process engineer position at Siemens Energy or other top corporations, with potential for growth into senior roles or leadership positions. However, the working student position may limit the immediate career advancement opportunities.",
+    "suggested_cv_angles": [
+      "Highlight process optimization and root cause analysis experience",
+      "Emphasize relevance of mechanical and aeronautical engineering background"
+    ],
+    "salary_assessment": "not stated",
+    "job_title": "Working student process engineer"
+  },
+  {
+    "job_id": "c0fea27adf7c",
+    "title": "Senior Process Engineer",
+    "company": "CT19",
+    "location": "Berlin, Germany",
+    "url": "https://de.linkedin.com/jobs/view/senior-process-engineer-at-ct19-4425495435",
+    "source": "linkedin",
+    "score": 8,
+    "verdict": "STRONG_MATCH",
+    "notion_url": "https://app.notion.com/p/Senior-Process-Engineer-37959fcfeadd81169877c79f49f85427",
+    "cv_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/08_CT19_Senior_Process_Engineer/CV.pdf",
+    "cover_letter_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/08_CT19_Senior_Process_Engineer/CoverLetter.pdf",
+    "company_tier": "NOTABLE_STARTUP",
+    "one_line_summary": "Senior Process Engineer at deep-tech startup",
+    "why_it_fits": "Panagiotis's experience in process optimization, loss and waste reduction, and Root Cause Analysis (RCA) aligns with the role's requirements. His work at Procter & Gamble, where he redesigned chemical storage and fluid workflows, demonstrates relevant process engineering skills. Additionally, his experience with digital transformation and automation will be valuable in this role.",
+    "why_it_doesnt_fit": "The role requires a degree in Chemical Engineering or a related discipline, whereas Panagiotis's background is in Mechanical and Aeronautical Engineering.",
+    "matched_skills": [
+      "Process Optimization",
+      "Loss and Waste Reduction",
+      "Root Cause Analysis (RCA)",
+      "Digital Transformation",
+      "Automation"
+    ],
+    "skill_gaps": [
+      "Aspen Plus or Aspen HYSYS experience"
+    ],
+    "career_vision_alignment": "This role aligns with Panagiotis's 10-year goals of solving complex engineering problems, working in a fast-paced environment, and making a tangible impact. The startup's focus on sustainability and innovative technology also resonates with his desire to work on meaningful projects. The role's requirement for entrepreneurial thinking and ownership will also help him develop skills that are essential for his long-term career vision.",
+    "career_path_potential": "This role has the potential to lead to senior leadership positions in the company or other top-tier organizations in the industry. In 3-5 years, Panagiotis could be leading cross-functional teams, driving business growth, and making strategic decisions that impact the company's direction. The experience and skills gained in this role will also open doors to other elite opportunities in the industry.",
+    "suggested_cv_angles": [
+      "Lead with Procter & Gamble experience",
+      "Highlight digital transformation and automation skills"
+    ],
+    "salary_assessment": "not stated, but implied to be competitive with annual bonus and equity",
+    "job_title": "Senior Process Engineer"
+  },
+  {
+    "job_id": "9e471976e947",
+    "title": "Senior Process Engineer",
+    "company": "Arcadis",
+    "location": "Kinsale, Ireland",
+    "url": "https://ie.linkedin.com/jobs/view/senior-process-engineer-at-arcadis-4425472982",
+    "source": "linkedin",
+    "score": 6,
+    "verdict": "PARTIAL_MATCH",
+    "notion_url": null,
+    "cv_path": null,
+    "cover_letter_path": null,
+    "company_tier": "TOP_CORP",
+    "one_line_summary": "Senior Process Engineer at Arcadis, partial CV fit",
+    "why_it_fits": "Panagiotis has experience in process optimization and engineering, as seen in his Procter & Gamble internship and Hellenic Airforce aeronautical engineer internship. His skills in process calculations, equipment design, and safety aspects align with the role's requirements.",
+    "why_it_doesnt_fit": "The role requires at least 10 years of design experience in the Pharmaceutical and Biopharmaceutical sectors, which Panagiotis lacks, and the location is site-based in Kinsale, Ireland, which may not align with his global mobility goals.",
+    "matched_skills": [
+      "process optimization",
+      "equipment design",
+      "safety aspects"
+    ],
+    "skill_gaps": [
+      "pharmaceutical industry experience",
+      "chartered engineer status"
+    ],
+    "career_vision_alignment": "This role advances Panagiotis' 10-year goals by providing experience in a multinational company and exposing him to complex engineering problems. However, the site-based location and specific industry requirements may not fully align with his desire for global mobility and diverse industry experience.",
+    "career_path_potential": "In 3-5 years, this role could lead to senior leadership positions in Arcadis or other multinational companies, but may not provide the desired level of global mobility and industry diversity that Panagiotis is seeking.",
+    "suggested_cv_angles": [
+      "lead with Procter & Gamble internship experience",
+      "highlight process optimization and equipment design skills"
+    ],
+    "salary_assessment": "not stated",
+    "job_title": "Senior Process Engineer"
+  },
+  {
+    "job_id": "504e52a85050",
+    "title": "Production Process Engineer Specialist I",
+    "company": "Lear Corporation",
+    "location": "Belgrade, Serbia",
+    "url": "https://rs.linkedin.com/jobs/view/production-process-engineer-specialist-i-at-lear-corporation-4425083466",
+    "source": "linkedin",
+    "score": 8,
+    "verdict": "STRONG_MATCH",
+    "notion_url": "https://app.notion.com/p/Production-Process-Engineer-Specialist-I-37959fcfeadd81af82f6dbd2a31cefe6",
+    "cv_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/08_Lear_Corporation_Production_Process_Engineer_Specialist/CV.pdf",
+    "cover_letter_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/08_Lear_Corporation_Production_Process_Engineer_Specialist/CoverLetter.pdf",
+    "company_tier": "TOP_CORP",
+    "one_line_summary": "Production Process Engineer at Lear Corporation",
+    "why_it_fits": "Panagiotis's experience in process optimization, root cause analysis, and manufacturing operations at Procter & Gamble and his role as a Health & Safety Engineer at the New Municipality Court of Piraeus align with the responsibilities of this position. His skills in process improvement, problem-solving, and quality systems also match the requirements. Additionally, his experience with equipment commissioning and validation can be applied to the role's equipment requirements and commissioning activities.",
+    "why_it_doesnt_fit": "The role requires 2+ years of experience in a manufacturing or industrial engineering environment, but Panagiotis's experience is a mix of internships and freelance work, which may not fully meet this requirement.",
+    "matched_skills": [
+      "Process Optimization",
+      "Root Cause Analysis",
+      "Quality Systems",
+      "Equipment Commissioning",
+      "Validation"
+    ],
+    "skill_gaps": [
+      "French language proficiency is required, but Panagiotis's level is not explicitly stated as proficient for work"
+    ],
+    "career_vision_alignment": "This role can advance Panagiotis's 10-year goals by providing him with experience in manufacturing excellence, process engineering, and problem-solving, which are essential skills for a global, mobile role. The company's reputation as a globally recognized corporation can also open elite doors for him.",
+    "career_path_potential": "In 3-5 years, this role can lead to senior positions in manufacturing engineering, operations management, or even director-level roles in a global corporation. Panagiotis can also explore opportunities in management consulting, advanced manufacturing, or industrial AI, which align with his career vision.",
+    "suggested_cv_angles": [
+      "Lead with Procter & Gamble experience",
+      "Highlight process optimization and root cause analysis skills"
+    ],
+    "salary_assessment": "not stated",
+    "job_title": "Production Process Engineer Specialist I"
+  },
+  {
+    "job_id": "d0cd4faac435",
+    "title": "Associate Program - Project Manager",
+    "company": "IBM",
+    "location": "Groningen, Groningen, Netherlands",
+    "url": "https://nl.linkedin.com/jobs/view/associate-program-project-manager-at-ibm-4421956578",
+    "source": "linkedin",
+    "score": 8,
+    "verdict": "STRONG_MATCH",
+    "notion_url": "https://app.notion.com/p/Associate-Program-Project-Manager-37a59fcfeadd81f3aa7dcf15ab131228",
+    "cv_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/08_IBM_Associate_Program_-_Project_Manager/CV.pdf",
+    "cover_letter_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/08_IBM_Associate_Program_-_Project_Manager/CoverLetter.pdf",
+    "company_tier": "TOP_CORP",
+    "one_line_summary": "Project manager role at IBM",
+    "why_it_fits": "Panagiotis's experience in process optimization, project management, and leadership roles in Procter & Gamble and EUROAVIA align with the requirements of this role. His technical skills in areas like supply chain resilience and asset reliability are also relevant. Additionally, his experience in managing budgets and operational expenditure controls can be valuable in this position.",
+    "why_it_doesnt_fit": "The role may not offer the same level of global mobility and autonomy that Panagiotis is looking for in his career vision, with the location being fixed in Groningen, Netherlands.",
+    "matched_skills": [
+      "project management",
+      "process optimization",
+      "supply chain resilience",
+      "asset reliability",
+      "budget management"
+    ],
+    "skill_gaps": [
+      "IBM-specific software or systems"
+    ],
+    "career_vision_alignment": "This role at IBM can advance Panagiotis's 10-year goals by providing him with a world-class 2-year development program, exposure to multiple exciting projects, and a friendly and energetic working environment. It can also help him develop his skills in the latest and relevant methodologies, which can be beneficial in solving complex engineering or operational problems.",
+    "career_path_potential": "In 3-5 years, this role can lead to senior project management positions, program management, or even leadership roles within IBM or other top-tier companies. The skills and experience gained in this role can also be transferable to other industries, such as aerospace, advanced manufacturing, or management consulting.",
+    "suggested_cv_angles": [
+      "Procter & Gamble project management experience",
+      "EUROAVIA leadership and budget management experience"
+    ],
+    "salary_assessment": "not stated",
+    "job_title": "Associate Program - Project Manager"
+  },
+  {
+    "job_id": "547cca79d723",
+    "title": "Manufacturing Process Engineer",
+    "company": "Orthofix",
+    "location": "Bussolengo, Veneto, Italy",
+    "url": "https://it.linkedin.com/jobs/view/manufacturing-process-engineer-at-orthofix-4412663944",
+    "source": "linkedin",
+    "score": 7,
+    "verdict": "STRONG_MATCH",
+    "notion_url": "https://app.notion.com/p/Manufacturing-Process-Engineer-37a59fcfeadd810fbc40e2559ae138a8",
+    "cv_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/07_Orthofix_Manufacturing_Process_Engineer/CV.pdf",
+    "cover_letter_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/07_Orthofix_Manufacturing_Process_Engineer/CoverLetter.pdf",
+    "company_tier": "NOTABLE_STARTUP",
+    "one_line_summary": "Manufacturing Process Engineer role at Orthofix",
+    "why_it_fits": "Panagiotis' experience in process optimization, loss and waste reduction, and root cause analysis from his internship at Procter & Gamble aligns with the role's requirements. His work on designing and planning activities for industrialization of products also matches the job description. Additionally, his experience in collaborating with various departments, such as R&D and quality engineering, is relevant to the role.",
+    "why_it_doesnt_fit": "The role is based in a single location, which may not offer the global mobility Panagiotis is looking for.",
+    "matched_skills": [
+      "Process Optimization",
+      "Loss and Waste Reduction",
+      "Root Cause Analysis",
+      "Collaboration with R&D and quality engineering"
+    ],
+    "skill_gaps": [
+      "CNC machining",
+      "Surface treatments"
+    ],
+    "career_vision_alignment": "This role advances Panagiotis' 10-year goals by providing opportunities to work on complex engineering problems, collaborate with various departments, and contribute to the industrialization of products. It also offers a chance to work in a fast-paced environment and develop skills in manufacturing process engineering.",
+    "career_path_potential": "In 3-5 years, this role could lead to senior process engineering positions or leadership roles in manufacturing operations, with potential opportunities to work on global projects and collaborate with elite teams. It could also serve as a stepping stone for roles in management consulting, advanced manufacturing, or aerospace.",
+    "suggested_cv_angles": [
+      "Lead with Procter & Gamble internship experience",
+      "Highlight collaboration with R&D and quality engineering"
+    ],
+    "salary_assessment": "not stated",
+    "job_title": "Manufacturing Process Engineer"
+  },
+  {
+    "score": 0,
+    "verdict": "SKIPPED",
+    "company_tier": "SKIP",
+    "job_id": "15fe651e366f",
+    "title": "Ingeniero/a de Procesos y Mejora Continua",
+    "company": "LHH",
+    "location": "Greater Lerida Area",
+    "url": "https://es.linkedin.com/jobs/view/ingeniero-a-de-procesos-y-mejora-continua-at-lhh-4425099024",
+    "source": "linkedin"
+  },
+  {
+    "job_id": "cc50a3837a00",
+    "title": "Process Engineer - Global Pharmaceutical Manufacturing",
+    "company": "GL Global",
+    "location": "Basel, Switzerland",
+    "url": "https://ch.linkedin.com/jobs/view/process-engineer-global-pharmaceutical-manufacturing-at-gl-global-4421930319",
+    "source": "linkedin",
+    "score": 8,
+    "verdict": "STRONG_MATCH",
+    "notion_url": "https://app.notion.com/p/Process-Engineer-Global-Pharmaceutical-Manufacturing-37a59fcfeadd8125a81ff9a7c42a0e95",
+    "cv_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/08_GL_Global_Process_Engineer_-_Global_Pharmaceutical_Manu/CV.pdf",
+    "cover_letter_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/08_GL_Global_Process_Engineer_-_Global_Pharmaceutical_Manu/CoverLetter.pdf",
+    "company_tier": "TOP_CORP",
+    "one_line_summary": "Global pharma process engineer role",
+    "why_it_fits": "Panagiotis's experience in process optimization, loss and waste reduction, and root cause analysis aligns with the role's requirements. His background in engineering and operations, including his work at Procter & Gamble, also matches the job's needs. Additionally, his Master's thesis on additive manufacturing process model for part quality optimization demonstrates his ability to work on complex technical projects.",
+    "why_it_doesnt_fit": "",
+    "matched_skills": [
+      "Process Optimization",
+      "Loss & Waste Reduction",
+      "Root Cause Analysis",
+      "Engineering",
+      "Operations"
+    ],
+    "skill_gaps": [],
+    "career_vision_alignment": "This role advances Panagiotis's 10-year goals by providing a global scope, complex engineering challenges, and opportunities for growth and elite networking. The position's focus on transforming business strategy into technical solutions also aligns with his interest in technical-commercial hybrid roles. Furthermore, the company's reputation as a leading global pharmaceutical organization provides a platform for visible world impact.",
+    "career_path_potential": "In 3-5 years, this role could lead to senior process engineering positions, program management, or even executive roles within the company or other top-tier organizations. The experience and network gained in this position could also open doors to management consulting, advanced manufacturing, or other high-impact industries.",
+    "suggested_cv_angles": [
+      "Procter & Gamble project management and engineering internship",
+      "MSc thesis on additive manufacturing process model"
+    ],
+    "salary_assessment": "not stated",
+    "job_title": "Process Engineer - Global Pharmaceutical Manufacturing"
+  },
+  {
+    "score": 0,
+    "verdict": "SKIPPED",
+    "company_tier": "SKIP",
+    "job_id": "4a69f861b2d3",
+    "title": "INGENIERO/A DE PROCESOS",
+    "company": "AFFINIS Selección de Personal & Headhunting",
+    "location": "Les Franqueses del Vallès, Catalonia, Spain",
+    "url": "https://es.linkedin.com/jobs/view/ingeniero-a-de-procesos-at-affinis-selecci%C3%B3n-de-personal-headhunting-4421939860",
+    "source": "linkedin"
+  },
+  {
+    "score": 0,
+    "verdict": "SKIPPED",
+    "company_tier": "SKIP",
+    "job_id": "1f7b2df48bf1",
+    "title": "Industrial / Lean Engineer",
+    "company": "Adecco",
+    "location": "Botoşani, Romania",
+    "url": "https://ro.linkedin.com/jobs/view/industrial-lean-engineer-at-adecco-4425486288",
+    "source": "linkedin"
+  },
+  {
+    "score": 0,
+    "verdict": "SKIPPED",
+    "company_tier": "SKIP",
+    "job_id": "3c3a19a9e654",
+    "title": "Design Engineer",
+    "company": "OCU",
+    "location": "Neath, Wales, United Kingdom",
+    "url": "https://uk.linkedin.com/jobs/view/design-engineer-at-ocu-4421961717",
+    "source": "linkedin"
+  },
+  {
+    "score": 0,
+    "verdict": "SKIPPED",
+    "company_tier": "SKIP",
+    "job_id": "93c946fedd25",
+    "title": "Graduate Geotechnical Design Engineer",
+    "company": "TipTopJob",
+    "location": "Midlothian, Scotland, United Kingdom",
+    "url": "https://uk.linkedin.com/jobs/view/graduate-geotechnical-design-engineer-at-tiptopjob-4425606347",
+    "source": "linkedin"
+  },
+  {
+    "score": 0,
+    "verdict": "SKIPPED",
+    "company_tier": "SKIP",
+    "job_id": "5f583008c636",
+    "title": "Design Engineer (HVAC/Building Services)",
+    "company": "Ernest Gordon Recruitment",
+    "location": "Watlington, England, United Kingdom",
+    "url": "https://uk.linkedin.com/jobs/view/design-engineer-hvac-building-services-at-ernest-gordon-recruitment-4425603496",
+    "source": "linkedin"
+  },
+  {
+    "score": 0,
+    "verdict": "SKIPPED",
+    "company_tier": "SKIP",
+    "job_id": "841629e3595a",
+    "title": "Graduate Electrical Design Engineer (Building Services)",
+    "company": "Ernest Gordon Recruitment",
+    "location": "Newcastle Upon Tyne, England, United Kingdom",
+    "url": "https://uk.linkedin.com/jobs/view/graduate-electrical-design-engineer-building-services-at-ernest-gordon-recruitment-4425614470",
+    "source": "linkedin"
+  },
+  {
+    "job_id": "7061de78a4a7",
+    "title": "Electrical Design Engineer (EN-EL-DDO-2026-104-GRAP)",
+    "company": "CERN",
+    "location": "Geneva, Geneva, Switzerland",
+    "url": "https://ch.linkedin.com/jobs/view/electrical-design-engineer-en-el-ddo-2026-104-grap-at-cern-4421967448",
+    "source": "linkedin",
+    "score": 7,
+    "verdict": "STRONG_MATCH",
+    "notion_url": "https://app.notion.com/p/Electrical-Design-Engineer-EN-EL-DDO-2026-104-GRAP-37a59fcfeadd810bbfd4d33f6b9c4093",
+    "cv_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/07_CERN_Electrical_Design_Engineer__EN-EL-DDO-2026-104-GRA/CV.pdf",
+    "cover_letter_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/07_CERN_Electrical_Design_Engineer__EN-EL-DDO-2026-104-GRA/CoverLetter.pdf",
+    "company_tier": "TOP_CORP",
+    "one_line_summary": "Electrical design role at CERN",
+    "why_it_fits": "Panagiotis's experience in process optimization and engineering, as well as his skills in CAD software such as CATIA V5 and AutoCAD, match the role's requirements. His background in Root Cause Analysis and problem-solving also aligns with the job's demands.",
+    "why_it_doesnt_fit": "The role is specific to electrical engineering, which is not Panagiotis's primary background, being a mechanical and aeronautical engineer.",
+    "matched_skills": [
+      "Process Optimization",
+      "CAD software",
+      "Root Cause Analysis",
+      "Problem-solving"
+    ],
+    "skill_gaps": [
+      "Electrical engineering expertise"
+    ],
+    "career_vision_alignment": "This role advances Panagiotis's 10-year goals by offering a challenging and high-impact engineering problem to solve at a global frontier. Working at CERN, a renowned organization, will also provide opportunities for growth and elite networking.",
+    "career_path_potential": "In 3-5 years, this role could lead to senior design or leadership positions within CERN or other top-tier engineering companies, aligning with Panagiotis's goals of constant challenge and visible world impact.",
+    "suggested_cv_angles": [
+      "Highlight process optimization and engineering experience",
+      "Emphasize transferable skills such as problem-solving and Root Cause Analysis"
+    ],
+    "salary_assessment": "not stated",
+    "job_title": "Electrical Design Engineer (EN-EL-DDO-2026-104-GRAP)"
+  },
+  {
+    "job_id": "29becafba710",
+    "title": "Secondary Design Engineer HVDC (m/w/d)",
+    "company": "GE Vernova",
+    "location": "Berlin, Berlin, Germany",
+    "url": "https://de.linkedin.com/jobs/view/secondary-design-engineer-hvdc-m-w-d-at-ge-vernova-4425464912",
+    "source": "linkedin",
+    "score": 8,
+    "verdict": "STRONG_MATCH",
+    "notion_url": "https://app.notion.com/p/Secondary-Design-Engineer-HVDC-m-w-d-37a59fcfeadd8170b868f1d7ac326d4f",
+    "cv_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/08_GE_Vernova_Secondary_Design_Engineer_HVDC__m_w_d_/CV.pdf",
+    "cover_letter_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/08_GE_Vernova_Secondary_Design_Engineer_HVDC__m_w_d_/CoverLetter.pdf",
+    "company_tier": "TOP_CORP",
+    "one_line_summary": "HVDC design engineer at GE Vernova",
+    "why_it_fits": "Panagiotis's experience in process optimization and system design from his MSc thesis and Procter & Gamble internship aligns with the role's focus on systems engineering. His skills in CATIA V5, AutoCAD, and MATLAB also match the job requirements.",
+    "why_it_doesnt_fit": "The role's specific focus on HVDC systems may require additional training or experience that Panagiotis doesn't have.",
+    "matched_skills": [
+      "Systems Engineering",
+      "Process Optimization",
+      "CATIA V5",
+      "AutoCAD",
+      "MATLAB"
+    ],
+    "skill_gaps": [
+      "HVDC systems knowledge"
+    ],
+    "career_vision_alignment": "This role advances Panagiotis's 10-year goals by providing a global, elite company brand experience and challenging him with complex engineering problems. It also aligns with his interest in working on high-impact projects with visible world impact.",
+    "career_path_potential": "This role can lead to senior engineering positions or leadership roles in the energy sector, and potentially open doors to other top-tier companies or industries. In 3-5 years, Panagiotis could be leading cross-functional teams or driving business growth through innovative engineering solutions.",
+    "suggested_cv_angles": [
+      "Lead with Procter & Gamble internship experience, highlighting process optimization and system design skills",
+      "Emphasize MSc thesis work on additive manufacturing and system modeling"
+    ],
+    "salary_assessment": "not stated",
+    "job_title": "Secondary Design Engineer HVDC (m/w/d)"
+  },
+  {
+    "job_id": "9f490ce8c4fd",
+    "title": "Analog Design Engineer m/f/d",
+    "company": "Texas Instruments Europe",
+    "location": "Freising, Bavaria, Germany",
+    "url": "https://de.linkedin.com/jobs/view/analog-design-engineer-m-f-d-at-texas-instruments-europe-4425266113",
+    "source": "linkedin",
+    "score": 7,
+    "verdict": "STRONG_MATCH",
+    "notion_url": "https://app.notion.com/p/Analog-Design-Engineer-m-f-d-37a59fcfeadd810fab5cccc7e37590f1",
+    "cv_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/07_Texas_Instruments_Europe_Analog_Design_Engineer_m_f_d/CV.pdf",
+    "cover_letter_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/07_Texas_Instruments_Europe_Analog_Design_Engineer_m_f_d/CoverLetter.pdf",
+    "company_tier": "TOP_CORP",
+    "one_line_summary": "Analog Design Engineer at Texas Instruments",
+    "why_it_fits": "Panagiotis's experience in process optimization, problem-solving, and technical skills like MATLAB and Python match the role's requirements. His master's thesis on additive manufacturing also demonstrates relevant technical expertise. Additionally, his experience in QA automation and supply chain resilience can be valuable in an engineering role.",
+    "why_it_doesnt_fit": "The role seems to focus more on analog design and integrated circuits, which is not directly mentioned in Panagiotis's CV, potentially requiring additional training or adaptation.",
+    "matched_skills": [
+      "Process Optimization",
+      "Problem-Solving",
+      "MATLAB",
+      "Python"
+    ],
+    "skill_gaps": [
+      "Analog Design",
+      "Integrated Circuits"
+    ],
+    "career_vision_alignment": "This role at Texas Instruments can advance Panagiotis's 10-year goals by providing a challenging engineering position with a top-tier company, potentially leading to global mobility and a 6-figure salary. The Career Accelerator Program also offers valuable training and resources for long-term career success.",
+    "career_path_potential": "In 3-5 years, this role could lead to senior engineering positions or leadership roles within Texas Instruments or other top companies, aligning with Panagiotis's goal of solving complex engineering problems and working with elite teams.",
+    "suggested_cv_angles": [
+      "Lead with master's thesis and technical skills",
+      "Highlight process optimization and problem-solving experience"
+    ],
+    "salary_assessment": "not stated",
+    "job_title": "Analog Design Engineer m/f/d"
+  },
+  {
+    "score": 0,
+    "verdict": "SKIPPED",
+    "company_tier": "SKIP",
+    "job_id": "4222136f1251",
+    "title": "Principal Electrical Design Engineer",
+    "company": "Alexander Associates Technical Recruitment",
+    "location": "London Area, United Kingdom",
+    "url": "https://uk.linkedin.com/jobs/view/principal-electrical-design-engineer-at-alexander-associates-technical-recruitment-4425449801",
+    "source": "linkedin"
+  },
+  {
+    "job_id": "900d00993939",
+    "title": "Civil Design Engineer - Water Industry",
+    "company": "Tetra Tech Europe",
+    "location": "Exeter, England, United Kingdom",
+    "url": "https://uk.linkedin.com/jobs/view/civil-design-engineer-water-industry-at-tetra-tech-europe-4425259206",
+    "source": "linkedin",
+    "score": 6,
+    "verdict": "PARTIAL_MATCH",
+    "notion_url": null,
+    "cv_path": null,
+    "cover_letter_path": null,
+    "company_tier": "TOP_CORP",
+    "one_line_summary": "Water industry civil design role",
+    "why_it_fits": "Panagiotis's experience in process optimization and engineering design can be applied to water treatment plant design. His proficiency in software such as AutoCAD and MATLAB can also be utilized in this role. Additionally, his experience in collaborating with multidisciplinary teams can be beneficial in this position.",
+    "why_it_doesnt_fit": "The role seems to be more focused on civil design, which is not directly aligned with Panagiotis's background in mechanical and aeronautical engineering. Additionally, the role may not offer the level of global mobility and elite challenges that Panagiotis is seeking.",
+    "matched_skills": [
+      "process optimization",
+      "engineering design",
+      "AutoCAD",
+      "MATLAB",
+      "multidisciplinary collaboration"
+    ],
+    "skill_gaps": [
+      "civil design expertise",
+      "water industry knowledge"
+    ],
+    "career_vision_alignment": "This role can provide Panagiotis with experience in designing and optimizing complex systems, which can be beneficial for his long-term goal of solving exceptionally hard engineering problems. However, the role may not offer the level of global mobility and elite challenges that Panagiotis is seeking. The company's reputation and network can still be beneficial for his career advancement.",
+    "career_path_potential": "In 3-5 years, Panagiotis can move into a senior design engineer or technical lead role, overseeing large-scale water infrastructure projects. He can also explore opportunities in other industries, such as energy or aerospace, where his skills in process optimization and engineering design can be valuable.",
+    "suggested_cv_angles": [
+      "Highlight process optimization experience",
+      "Emphasize engineering design skills",
+      "Focus on multidisciplinary collaboration"
+    ],
+    "salary_assessment": "not stated",
+    "job_title": "Civil Design Engineer - Water Industry"
+  },
+  {
+    "job_id": "1560fda04f14",
+    "title": "Civil Design Engineer - Water Industry",
+    "company": "Tetra Tech Europe",
+    "location": "Warrington, England, United Kingdom",
+    "url": "https://uk.linkedin.com/jobs/view/civil-design-engineer-water-industry-at-tetra-tech-europe-4425252231",
+    "source": "linkedin",
+    "score": 6,
+    "verdict": "PARTIAL_MATCH",
+    "notion_url": null,
+    "cv_path": null,
+    "cover_letter_path": null,
+    "company_tier": "TOP_CORP",
+    "one_line_summary": "Water industry design engineer role",
+    "why_it_fits": "Panagiotis's experience in process optimization and engineering can be applied to water treatment plant design. His skills in AutoCAD and other software can be useful in this role. Additionally, his experience in working with multidisciplinary teams can be beneficial.",
+    "why_it_doesnt_fit": "The role is focused on civil design engineering, which is not directly related to Panagiotis's background in mechanical and aeronautical engineering. The role also does not seem to involve high-level commercial negotiations or advanced analytics.",
+    "matched_skills": [
+      "AutoCAD",
+      "process optimization",
+      "teamwork"
+    ],
+    "skill_gaps": [
+      "civil design engineering",
+      "water industry knowledge"
+    ],
+    "career_vision_alignment": "This role can provide Panagiotis with experience in a new industry and help him develop his skills in design engineering. However, it may not directly align with his goal of working on exceptionally hard, high-impact engineering problems or having a global, mobile role.",
+    "career_path_potential": "This role can lead to senior design engineer or project management positions within the company or industry. However, it may not provide the same level of challenge or visibility as roles in other industries or companies.",
+    "suggested_cv_angles": [
+      "Highlight process optimization experience",
+      "Emphasize teamwork and multidisciplinary collaboration"
+    ],
+    "salary_assessment": "not stated",
+    "job_title": "Civil Design Engineer - Water Industry"
+  },
+  {
+    "job_id": "5e140402fa1f",
+    "title": "Civil Design Engineer - Water Industry",
+    "company": "Tetra Tech Europe",
+    "location": "Sheffield, England, United Kingdom",
+    "url": "https://uk.linkedin.com/jobs/view/civil-design-engineer-water-industry-at-tetra-tech-europe-4425259207",
+    "source": "linkedin",
+    "score": 6,
+    "verdict": "PARTIAL_MATCH",
+    "notion_url": null,
+    "cv_path": null,
+    "cover_letter_path": null,
+    "company_tier": "TOP_CORP",
+    "one_line_summary": "Water industry civil design role",
+    "why_it_fits": "Panagiotis's experience in process optimization and Root Cause Analysis can be applied to water infrastructure design. His work in Procter & Gamble and Hellenic Airforce demonstrates his ability to work on complex projects and optimize systems. Additionally, his skills in CAD design and technical documentation can be valuable in this role.",
+    "why_it_doesnt_fit": "The role is focused on civil design in the water industry, which is not a direct match for Panagiotis's background in mechanical and aeronautical engineering. Furthermore, the role does not explicitly mention opportunities for global mobility, elite teamwork, or cross-functional negotiations that align with his career vision.",
+    "matched_skills": [
+      "Process Optimization",
+      "Root Cause Analysis",
+      "CAD design",
+      "Technical documentation"
+    ],
+    "skill_gaps": [
+      "Civil engineering expertise",
+      "Water industry specific knowledge"
+    ],
+    "career_vision_alignment": "This role can provide Panagiotis with experience in a new industry and help him develop skills in civil design and water infrastructure. However, it may not offer the same level of global mobility, elite teamwork, or cross-functional negotiations that he is looking for. To align with his career vision, he may need to look for opportunities within Tetra Tech that involve more complex, high-impact projects or consider transitioning to a role that better fits his goals.",
+    "career_path_potential": "In 3-5 years, this role could lead to senior design engineer or project management positions within Tetra Tech's water consultancy. However, to reach his 6-figure salary target and achieve his career vision, Panagiotis may need to consider opportunities in other industries or companies that offer more elite challenges and global mobility.",
+    "suggested_cv_angles": [
+      "Highlight process optimization experience",
+      "Emphasize transferable skills from mechanical and aeronautical engineering"
+    ],
+    "salary_assessment": "not stated",
+    "job_title": "Civil Design Engineer - Water Industry"
+  },
+  {
+    "score": 0,
+    "verdict": "SKIPPED",
+    "company_tier": "SKIP",
+    "job_id": "fa55803cfd70",
+    "title": "GRADUATE PROGRAM LOGISTIQUE H/F",
+    "company": "STEF",
+    "location": "Carquefou, Pays de la Loire, France",
+    "url": "https://fr.linkedin.com/jobs/view/graduate-program-logistique-h-f-at-stef-4425492161",
+    "source": "linkedin"
+  },
+  {
+    "job_id": "1bdce36142cf",
+    "title": "Management Traineeship Tilburg",
+    "company": "Mainfreight Europe",
+    "location": "Tilburg, North Brabant, Netherlands",
+    "url": "https://nl.linkedin.com/jobs/view/management-traineeship-tilburg-at-mainfreight-europe-4294595965",
+    "source": "linkedin",
+    "score": 7,
+    "verdict": "STRONG_MATCH",
+    "notion_url": null,
+    "cv_path": null,
+    "cover_letter_path": "/Users/panagioteskaimasides/Documents/Claude code folder/job hunting/job-hunter/applications/07_Mainfreight_Europe_Management_Traineeship_Tilburg/CoverLetter.pdf",
+    "company_tier": "NOTABLE_STARTUP",
+    "one_line_summary": "Supply chain traineeship with global opportunities",
+    "why_it_fits": "Panagiotis's experience in process optimization, supply chain resilience, and operations management at Procter & Gamble aligns with the role's focus on supply chain management. His ability to work in a fast-paced environment and adapt to different roles, as seen in his internships, is also a good fit. Additionally, his language skills, including English, French, and Greek, could be beneficial for an international career within Mainfreight Europe.",
+    "why_it_doesnt_fit": "The role's starting point as a traineeship might not fully utilize Panagiotis's existing skills and experience, potentially leading to a slower start in achieving his 6-figure salary target.",
+    "matched_skills": [
+      "Process Optimization",
+      "Supply Chain Resilience",
+      "Operations Management",
+      "Language Skills"
+    ],
+    "skill_gaps": [
+      "Specific knowledge of logistics and transportation management"
+    ],
+    "career_vision_alignment": "This role offers Panagiotis the opportunity to work in a global, dynamic environment, solving complex supply chain problems, which aligns with his desire to tackle high-impact engineering or operational challenges. The potential for international travel and work also fits his vision of having a global, mobile career.",
+    "career_path_potential": "Completing the three-year traineeship could lead to senior roles within Mainfreight Europe, such as operations manager or supply chain director, providing Panagiotis with the challenges and elite opportunities he seeks. The experience gained could also open doors to other top-tier companies in the logistics and supply chain sector.",
+    "suggested_cv_angles": [
+      "Lead with Procter & Gamble experience, highlighting supply chain and operations achievements",
+      "Emphasize language skills and international adaptability"
+    ],
+    "salary_assessment": "not stated",
+    "job_title": "Management Traineeship Tilburg"
+  },
+  {
+    "score": 0,
+    "verdict": "FILTERED",
+    "job_id": "e22a8e7de6f6",
+    "title": "Lead Process Engineer",
+    "company": "Arcadis",
+    "location": "Dublin, County Dublin, Ireland",
+    "url": "https://ie.linkedin.com/jobs/view/lead-process-engineer-at-arcadis-4425631508",
+    "source": "linkedin"
+  },
+  {
+    "score": 0,
+    "verdict": "FILTERED",
+    "job_id": "abbad7fb51d1",
+    "title": "Senior Process Engineer",
+    "company": "Airswift",
+    "location": "Villeurbanne, Auvergne-Rhône-Alpes, France",
+    "url": "https://fr.linkedin.com/jobs/view/senior-process-engineer-at-airswift-4420288437",
+    "source": "linkedin"
+  },
+  {
+    "score": 0,
+    "verdict": "FILTERED",
+    "job_id": "a74bf3b420d7",
+    "title": "Senior Process Engineer",
+    "company": "Melt Group",
+    "location": "South East, England, United Kingdom",
+    "url": "https://uk.linkedin.com/jobs/view/senior-process-engineer-at-melt-group-4425638516",
+    "source": "linkedin"
+  },
+  {
+    "score": 0,
+    "verdict": "FILTERED",
+    "job_id": "0c4489581f00",
+    "title": "Intern - Supply Chain & Data Analyst",
+    "company": "Huntsman Corporation",
+    "location": "Cracow, Małopolskie, Poland",
+    "url": "https://pl.linkedin.com/jobs/view/intern-supply-chain-data-analyst-at-huntsman-corporation-4426343499",
+    "source": "linkedin"
+  },
+  {
+    "job_id": "fd12e564036f",
+    "title": "Process Engineer",
+    "company": "Rivan Industries",
+    "location": "London Area, United Kingdom",
+    "url": "https://uk.linkedin.com/jobs/view/process-engineer-at-rivan-industries-4425471985",
+    "source": "linkedin",
+    "score": 0,
+    "verdict": "ERROR",
+    "notion_url": null,
+    "cv_path": null,
+    "cover_letter_path": null
+  },
+  {
+    "job_id": "1ac5fc85075d",
+    "title": "Process Engineer",
+    "company": "Mondelēz International",
+    "location": "Chirk, Wales, United Kingdom",
+    "url": "https://uk.linkedin.com/jobs/view/process-engineer-at-mondel%C4%93z-international-4425627416",
+    "source": "linkedin",
+    "score": 0,
+    "verdict": "ERROR",
+    "notion_url": null,
+    "cv_path": null,
+    "cover_letter_path": null
+  },
+  {
+    "job_id": "1e0419be62b6",
+    "title": "Junior Manager Program - Folyamatmérnök",
+    "company": "Procter & Gamble",
+    "location": "Heves, Hungary",
+    "url": "https://hu.linkedin.com/jobs/view/junior-manager-program-folyamatm%C3%A9rn%C3%B6k-at-procter-gamble-4405116850",
+    "source": "linkedin",
+    "score": 0,
+    "verdict": "ERROR",
+    "notion_url": null,
+    "cv_path": null,
+    "cover_letter_path": null
+  },
+  {
+    "job_id": "87915b8e8317",
+    "title": "Process Engineer",
+    "company": "Etem Gestamp",
+    "location": "Sofia, Sofia City, Bulgaria",
+    "url": "https://bg.linkedin.com/jobs/view/process-engineer-at-etem-gestamp-4421915875",
+    "source": "linkedin",
+    "score": 0,
+    "verdict": "ERROR",
+    "notion_url": null,
+    "cv_path": null,
+    "cover_letter_path": null
+  },
+  {
+    "job_id": "c3d6ececa057",
+    "title": "Cleanroom Process Engineer",
+    "company": "Delft University of Technology",
+    "location": "Delft, South Holland, Netherlands",
+    "url": "https://nl.linkedin.com/jobs/view/cleanroom-process-engineer-at-delft-university-of-technology-4425604861",
+    "source": "linkedin",
+    "score": 0,
+    "verdict": "ERROR",
+    "notion_url": null,
+    "cv_path": null,
+    "cover_letter_path": null
+  },
+  {
+    "job_id": "96ab3df532e9",
+    "title": "Production Engineer",
+    "company": "Allseas",
+    "location": "Delft, South Holland, Netherlands",
+    "url": "https://nl.linkedin.com/jobs/view/production-engineer-at-allseas-4410806832",
+    "source": "linkedin",
+    "score": 0,
+    "verdict": "ERROR",
+    "notion_url": null,
+    "cv_path": null,
+    "cover_letter_path": null
+  },
+  {
+    "job_id": "2815d86536c6",
+    "title": "Process engineer",
+    "company": "AGC Automotive Czech a.s.",
+    "location": "Bílina, Ústí nad Labem, Czechia",
+    "url": "https://cz.linkedin.com/jobs/view/process-engineer-at-agc-automotive-czech-a-s-4421919753",
+    "source": "linkedin",
+    "score": 0,
+    "verdict": "ERROR",
+    "notion_url": null,
+    "cv_path": null,
+    "cover_letter_path": null
+  },
+  {
+    "job_id": "a391946a2f10",
+    "title": "Chemisch Process Engineer",
+    "company": "Evoke",
+    "location": "Breda, North Brabant, Netherlands",
+    "url": "https://nl.linkedin.com/jobs/view/chemisch-process-engineer-at-evoke-4425244844",
+    "source": "linkedin",
+    "score": 0,
+    "verdict": "ERROR",
+    "notion_url": null,
+    "cv_path": null,
+    "cover_letter_path": null
+  },
+  {
+    "job_id": "253357e26561",
+    "title": "EMEA Engineering Development Program Associate",
+    "company": "Avient Corporation",
+    "location": "Liverpool, England, United Kingdom",
+    "url": "https://uk.linkedin.com/jobs/view/emea-engineering-development-program-associate-at-avient-corporation-4400457492",
+    "source": "linkedin",
+    "score": 0,
+    "verdict": "ERROR",
+    "notion_url": null,
+    "cv_path": null,
+    "cover_letter_path": null
+  },
+  {
+    "job_id": "f3ef1872d192",
+    "title": "Proces Engineer - Technicum",
+    "company": "Jobster",
+    "location": "Assendelft, North Holland, Netherlands",
+    "url": "https://nl.linkedin.com/jobs/view/proces-engineer-technicum-at-jobster-4425208434",
+    "source": "linkedin",
+    "score": 0,
+    "verdict": "ERROR",
+    "notion_url": null,
+    "cv_path": null,
+    "cover_letter_path": null
+  },
+  {
+    "job_id": "72818dccd183",
+    "title": "EMEA Operations Development Program Associate",
+    "company": "Avient Corporation",
+    "location": "Ahrensburg, Schleswig-Holstein, Germany",
+    "url": "https://de.linkedin.com/jobs/view/emea-operations-development-program-associate-at-avient-corporation-4402879191",
+    "source": "linkedin",
+    "score": 0,
+    "verdict": "ERROR",
+    "notion_url": null,
+    "cv_path": null,
+    "cover_letter_path": null
+  },
+  {
+    "job_id": "900920154bb6",
+    "title": "Process Specialist",
+    "company": "Hexcel Corporation",
+    "location": "Duxford, England, United Kingdom",
+    "url": "https://uk.linkedin.com/jobs/view/process-specialist-at-hexcel-corporation-4414704515",
+    "source": "linkedin",
+    "score": 0,
+    "verdict": "ERROR",
+    "notion_url": null,
+    "cv_path": null,
+    "cover_letter_path": null
+  },
+  {
+    "job_id": "a422958fd38e",
+    "title": "Production Engineer",
+    "company": "Alumil",
+    "location": "Sérrai, Central Macedonia, Greece",
+    "url": "https://gr.linkedin.com/jobs/view/production-engineer-at-alumil-4425600092",
+    "source": "linkedin",
+    "score": 0,
+    "verdict": "ERROR",
+    "notion_url": null,
+    "cv_path": null,
+    "cover_letter_path": null
+  },
+  {
+    "job_id": "e0c05926bbc8",
+    "title": "Project Engineer - Procurement",
+    "company": "Hunter Philips Executive Search",
+    "location": "Athens, Attiki, Greece",
+    "url": "https://gr.linkedin.com/jobs/view/project-engineer-procurement-at-hunter-philips-executive-search-4425617266",
+    "source": "linkedin",
+    "score": 0,
+    "verdict": "ERROR",
+    "notion_url": null,
+    "cv_path": null,
+    "cover_letter_path": null
+  },
+  {
+    "job_id": "0e03f0385c65",
+    "title": "Production Engineer",
+    "company": "ELVAL",
+    "location": "Oinofyta, Central Greece, Greece",
+    "url": "https://gr.linkedin.com/jobs/view/production-engineer-at-elval-4419185708",
+    "source": "linkedin",
+    "score": 0,
+    "verdict": "ERROR",
+    "notion_url": null,
+    "cv_path": null,
+    "cover_letter_path": null
+  },
+  {
+    "job_id": "5ae0fb528c73",
+    "title": "Manufacturing Engineer",
+    "company": "INTRACOM DEFENSE",
+    "location": "Koropi, Attiki, Greece",
+    "url": "https://gr.linkedin.com/jobs/view/manufacturing-engineer-at-intracom-defense-4425460784",
+    "source": "linkedin",
+    "score": 0,
+    "verdict": "ERROR",
+    "notion_url": null,
+    "cv_path": null,
+    "cover_letter_path": null
+  },
+  {
+    "job_id": "ed580a3fd211",
+    "title": "Graduate Manufacturing Engineer",
+    "company": "Owen Daniels",
+    "location": "Castle Donington, England, United Kingdom",
+    "url": "https://uk.linkedin.com/jobs/view/graduate-manufacturing-engineer-at-owen-daniels-4421923839",
+    "source": "linkedin",
+    "score": 0,
+    "verdict": "ERROR",
+    "notion_url": null,
+    "cv_path": null,
+    "cover_letter_path": null
+  },
+  {
+    "job_id": "ee497f3689a1",
+    "title": "Graduate Electronics Engineer",
+    "company": "Advanced Technical Recruitment",
+    "location": "Derby, England, United Kingdom",
+    "url": "https://uk.linkedin.com/jobs/view/graduate-electronics-engineer-at-advanced-technical-recruitment-4425462676",
+    "source": "linkedin",
+    "score": 0,
+    "verdict": "ERROR",
+    "notion_url": null,
+    "cv_path": null,
+    "cover_letter_path": null
+  },
+  {
+    "job_id": "77b5bec14a49",
+    "title": "Project Engineer",
+    "company": "Omega",
+    "location": "Nottingham, England, United Kingdom",
+    "url": "https://uk.linkedin.com/jobs/view/project-engineer-at-omega-4413074170",
+    "source": "linkedin",
+    "score": 0,
+    "verdict": "ERROR",
+    "notion_url": null,
+    "cv_path": null,
+    "cover_letter_path": null
+  },
+  {
+    "job_id": "bf173f96a9ef",
+    "title": "Graduate Project Engineer",
+    "company": "Bilfinger UK",
+    "location": "Warrington, England, United Kingdom",
+    "url": "https://uk.linkedin.com/jobs/view/graduate-project-engineer-at-bilfinger-uk-4421966465",
+    "source": "linkedin",
+    "score": 0,
+    "verdict": "ERROR",
+    "notion_url": null,
+    "cv_path": null,
+    "cover_letter_path": null
+  },
+  {
+    "score": 0,
+    "verdict": "FILTERED",
+    "job_id": "cd4c05c3b624",
+    "title": "Sales Engineer (Robotic Systems / Automation)",
+    "company": "Ernest Gordon Recruitment",
+    "location": "Bristol, England, United Kingdom",
+    "url": "https://uk.linkedin.com/jobs/view/sales-engineer-robotic-systems-automation-at-ernest-gordon-recruitment-4425600538",
+    "source": "linkedin"
+  },
+  {
+    "job_id": "79f02bc0c21c",
+    "title": "Junior Technology Engineer",
+    "company": "Tenaris",
+    "location": "Zalău, Sălaj, Romania",
+    "url": "https://ro.linkedin.com/jobs/view/junior-technology-engineer-at-tenaris-4421925356",
+    "source": "linkedin",
+    "score": 0,
+    "verdict": "ERROR",
+    "notion_url": null,
+    "cv_path": null,
+    "cover_letter_path": null
+  },
+  {
+    "score": 0,
+    "verdict": "FILTERED",
+    "job_id": "d7a3b4f39109",
+    "title": "Senior Process Engineer",
+    "company": "MEDITE SMARTPLY",
+    "location": "Clonmel, County Tipperary, Ireland",
+    "url": "https://ie.linkedin.com/jobs/view/senior-process-engineer-at-medite-smartply-4425607727",
+    "source": "linkedin"
+  }
+]
