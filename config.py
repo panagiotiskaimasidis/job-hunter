@@ -36,6 +36,13 @@ SCRAPE_WORKERS: int = int(os.getenv("SCRAPE_WORKERS", "4"))   # parallel job fet
 LINKEDIN_EMAIL: str = os.getenv("LINKEDIN_EMAIL", "")
 LINKEDIN_PASSWORD: str = os.getenv("LINKEDIN_PASSWORD", "")
 
+# ── Email notifications (optional) ────────────────────────────────────────
+EMAIL_FROM: str = os.getenv("EMAIL_FROM", "")          # sender address
+EMAIL_TO: str = os.getenv("EMAIL_TO", "")              # recipient address
+EMAIL_SMTP_HOST: str = os.getenv("EMAIL_SMTP_HOST", "smtp.gmail.com")
+EMAIL_SMTP_PORT: int = int(os.getenv("EMAIL_SMTP_PORT", "587"))
+EMAIL_SMTP_PASSWORD: str = os.getenv("EMAIL_SMTP_PASSWORD", "")  # Gmail App Password
+
 # ── Job search queries & locations — loaded from the candidate's profile ────
 # These come from inputs/profile.json (generated during setup), so the app
 # searches for whatever roles/regions the current user actually wants.

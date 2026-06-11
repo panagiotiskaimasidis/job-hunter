@@ -2,9 +2,10 @@
 Job Hunter — main entry point.
 
 Usage:
-  python main.py                    # full pipeline (scrape + evaluate + generate)
+  python main.py                    # full pipeline (scrape + evaluate)
   python main.py --scrape-only      # scrape only, no evaluation
   python main.py --evaluate-only    # evaluate already-scraped jobs
+  python main.py --generate-docs    # generate CV+CL for jobs flagged in Notion
   python main.py --url <URL>        # process a single job URL
   python main.py --query <text>     # add extra search query
 
@@ -13,8 +14,8 @@ Output structure:
     [score]_[Company]_[Title]/
       job.txt           ← full job description
       evaluation.json   ← Gemini scoring details
-      CV.pdf            ← tailored CV for this role
-      CoverLetter.pdf   ← tailored cover letter
+      CV.pdf            ← tailored CV (generated on demand via Notion)
+      CoverLetter.pdf   ← tailored cover letter (generated on demand via Notion)
 """
 
 import argparse
@@ -70,6 +71,7 @@ from matcher.cover_letter import create_cover_letter
 from notion.client import create_job_page, get_pending_doc_requests, mark_docs_generated
 from notion.feedback import read_feedback, apply_feedback_to_run
 from data.target_companies import is_target_company
+from notifier.email_notifier import send_match_digest
 
 logging.basicConfig(
     level=logging.INFO,
@@ -408,7 +410,7 @@ def main() -> None:
         logger.info("%d unprocessed jobs queued.", len(jobs))
 
         processed = _load_processed()
-        new_matches = 0
+        new_matches: list[dict] = []
 
         for job in jobs:
             record = process_job(job)
@@ -416,16 +418,17 @@ def main() -> None:
                 processed.append(record)
                 _save_processed(processed)
                 if record.get("score", 0) >= config.MIN_MATCH_SCORE:
-                    new_matches += 1
+                    new_matches.append(record)
             time.sleep(1)
 
         logger.info("=" * 60)
         logger.info(
             "DONE. %d new matches (score ≥ %d) from %d jobs evaluated.",
-            new_matches, config.MIN_MATCH_SCORE, len(jobs),
+            len(new_matches), config.MIN_MATCH_SCORE, len(jobs),
         )
         if new_matches:
             logger.info("Applications: %s", config.APPLICATIONS_DIR)
+            send_match_digest(new_matches)
         logger.info("=" * 60)
 
 

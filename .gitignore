@@ -1,6 +1,6 @@
 # Secrets & personal data — NEVER commit
 .env
-inputs/profile.json
+set_secrets.py
 inputs/*.pdf
 inputs/PUT_YOUR_CV_HERE.txt
 
