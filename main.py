@@ -47,6 +47,7 @@ from scraper.runner import run_scraper, load_unprocessed
 # ── Keyword pre-filter ────────────────────────────────────────────────────────
 # Job titles containing any of these words are skipped instantly — no API call.
 _SKIP_TITLE_KEYWORDS = {
+    # ── Pure tech / non-engineering ───────────────────────────────────────────
     "software", "devops", "frontend", "backend", "fullstack", "full-stack",
     "data scientist", "data engineer", "data analyst", "machine learning",
     "cybersecurity", "security engineer", "network engineer", "cloud engineer",
@@ -54,8 +55,20 @@ _SKIP_TITLE_KEYWORDS = {
     "finance", "legal", "lawyer", "designer", "ux", "ui ", "graphic",
     "journalist", "copywriter", "content", "social media",
     "nursing", "doctor", "physician", "pharmacist",
-    "senior process", "lead process", "principal engineer",  # too senior
-    # Pharma/biotech (not relevant — Notion feedback showed 🔴 on these)
+    # ── Too senior ────────────────────────────────────────────────────────────
+    "senior process", "lead process", "principal engineer",
+    "head of", "director", "vp ", "vice president",
+    # ── Contract types to avoid (Notion feedback) ────────────────────────────
+    "maternity cover", "maternity leave", "fixed term", "fixed-term",
+    "temporary contract", "interim",
+    # ── Unwanted systems (Notion feedback: "don't like HVAC/HVDC systems") ───
+    "hvac", "hvdc", "heating ventilation", "air conditioning",
+    # ── Security clearance required (Notion feedback: avoid) ─────────────────
+    "security clearance", "sc cleared", "dv cleared", "nato secret",
+    "clearance required",
+    # ── Electrical design (not his field) ────────────────────────────────────
+    "electrical design", "power electronics", "pcb design",
+    # ── Pharma/biotech deep-science (not relevant — Notion feedback 🔴) ──────
     "bioprocess", "biologics", "biopharmaceutical", "drug substance",
     "validation engineer", "clinical", "pharmaceutical process",
 }

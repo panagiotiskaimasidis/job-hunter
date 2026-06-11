@@ -102,6 +102,30 @@ def read_feedback() -> dict:
     avoid_companies: list[str] = []
     comments: list[str] = []
 
+    # Comment-derived signal lists
+    skip_title_phrases: list[str] = []
+    skip_location_hints: list[str] = []
+    avoid_from_comments: list[str] = []
+
+    # Rules: (trigger phrases in comment) → (action, value)
+    # action = "skip_title" | "skip_location" | "avoid_company"
+    _COMMENT_RULES = [
+        (["french speaking", "french language", "don't like french",
+          "dont like french"],               "skip_location", "french speaking"),
+        (["fixed term", "fixed-term",
+          "temporary contract", "temp contract"],  "skip_title",    "fixed term"),
+        (["maternity", "maternity cover",
+          "maternity leave"],                "skip_title",    "maternity cover"),
+        (["security clearance", "sc cleared",
+          "clearance required"],             "skip_title",    "security clearance"),
+        (["hvac", "hvdc", "don't like hvac",
+          "dont like hvdc", "don't like hvdc"],    "skip_title",    "hvac"),
+        (["visa issue", "no visa", "visa problem",
+          "no sponsorship"],                 "skip_location", "no visa sponsorship"),
+        (["serbia", "belgrade"],              "skip_location", "serbia"),
+        (["duplicate", "bad job"],            "avoid_company", None),
+    ]
+
     for page in all_pages:
         props = page.get("properties", {})
         status  = _get_select(props, "Status")
@@ -112,6 +136,15 @@ def read_feedback() -> dict:
 
         if comment:
             comments.append(f"{title} @ {company}: {comment}")
+            comment_lc = comment.lower()
+            for triggers, action, value in _COMMENT_RULES:
+                if any(t in comment_lc for t in triggers):
+                    if action == "skip_title" and value:
+                        skip_title_phrases.append(value)
+                    elif action == "skip_location" and value:
+                        skip_location_hints.append(value)
+                    elif action == "avoid_company" and company:
+                        avoid_from_comments.append(company.lower())
 
         if status == "Rejected":
             rejected_titles.append(title.lower())
@@ -128,7 +161,10 @@ def read_feedback() -> dict:
             if word not in {"engineer", "senior", "lead", "junior", "the", "and", "for"}:
                 rejected_words[word] += 1
 
-    skip_keywords = [w for w, count in rejected_words.items() if count >= 2]
+    skip_keywords = list(set(
+        [w for w, count in rejected_words.items() if count >= 2]
+        + skip_title_phrases
+    ))
 
     # Extract query patterns from interview-winning titles
     boost_queries = list({
@@ -136,11 +172,14 @@ def read_feedback() -> dict:
         if any(kw in t for kw in ["process", "operations", "program", "manufacturing"])
     })[:5]
 
+    all_avoid = list(set(avoid_companies + avoid_from_comments))[:30]
+
     result = {
-        "skip_keywords":   skip_keywords,
-        "boost_queries":   boost_queries,
-        "avoid_companies": list(set(avoid_companies))[:20],
-        "comments":        comments[:50],
+        "skip_keywords":       skip_keywords,
+        "skip_location_hints": list(set(skip_location_hints)),
+        "boost_queries":       boost_queries,
+        "avoid_companies":     all_avoid,
+        "comments":            comments[:50],
         "stats": {
             "total_pages":   len(all_pages),
             "rejected":      len(rejected_titles),
@@ -178,12 +217,18 @@ def apply_feedback_to_run(skip_keywords_set: set, search_queries: list) -> tuple
     except Exception:
         return skip_keywords_set, search_queries
 
-    # Add learned skip keywords
+    # Add learned skip keywords (from rejections + comment rules)
     new_skips = set(data.get("skip_keywords", []))
     if new_skips:
         logger.info("[feedback] Applying %d learned skip keywords: %s",
                     len(new_skips), ", ".join(sorted(new_skips)))
         skip_keywords_set = skip_keywords_set | new_skips
+
+    # Log location hints (for visibility — not yet auto-filtered at scrape level)
+    hints = data.get("skip_location_hints", [])
+    if hints:
+        logger.info("[feedback] Location filters from your Notion notes: %s",
+                    ", ".join(hints))
 
     # Surface boost queries that aren't already in the list
     for q in data.get("boost_queries", []):
