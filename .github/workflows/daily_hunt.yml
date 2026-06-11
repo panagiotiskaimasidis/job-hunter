@@ -45,11 +45,6 @@ jobs:
           SCRAPE_WORKERS=4
           EOF
 
-      - name: Write profile from secret
-        run: |
-          mkdir -p inputs
-          echo '${{ secrets.PROFILE_JSON }}' > inputs/profile.json
-
       - name: Restore dedup cache
         uses: actions/cache@v4
         with:
