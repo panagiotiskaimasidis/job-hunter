@@ -236,26 +236,69 @@ def generate_docs_for_pending() -> None:
                 if job_url and job_url in p.read_text(encoding="utf-8")
             ]
 
+        # ── Re-evaluate from live URL when no local cache exists ─────────
+        # In GitHub Actions the applications/ folder is empty (gitignored).
+        # Fall back to fetching the job URL and re-running the evaluator.
         if not matches:
-            logger.error("  → No local evaluation.json found for %s — skipping.", job_title)
-            continue
+            logger.info("  → No local cache — fetching job URL and re-evaluating…")
+            description = ""
+            salary = ""
+            if job_url:
+                import httpx
+                from bs4 import BeautifulSoup
+                try:
+                    headers = {"User-Agent": "Mozilla/5.0", "Accept-Language": "en-US,en;q=0.9"}
+                    r = httpx.get(job_url, headers=headers, timeout=20, follow_redirects=True)
+                    r.raise_for_status()
+                    soup = BeautifulSoup(r.text, "html.parser")
+                    desc_el = (
+                        soup.select_one("div.show-more-less-html__markup")
+                        or soup.select_one("div#jobDescriptionText")
+                        or soup.select_one("section.job-description")
+                        or soup.select_one("main")
+                    )
+                    description = desc_el.get_text(separator="\n", strip=True)[:5000] if desc_el else ""
+                    logger.info("  → Fetched %d chars from job URL", len(description))
+                except Exception as exc:
+                    logger.warning("  → Could not fetch job URL (%s) — using blank description", exc)
 
-        eval_path = matches[0]
-        evaluation = json.loads(eval_path.read_text(encoding="utf-8"))
-        app_dir    = eval_path.parent
+            from scraper.base import JobPosting
+            job_obj = JobPosting(
+                title=job_title, company=company, location=location,
+                description=description, url=job_url, source="notion",
+                job_id=page_id, salary=None,
+            )
+            evaluation = evaluate_job(job_obj)
+            # Create application folder + save files so next run is instant
+            folder_name = f"{evaluation.get('score', 0):02d}_{_safe_name(company, job_title)}"
+            app_dir = config.APPLICATIONS_DIR / folder_name
+            app_dir.mkdir(parents=True, exist_ok=True)
+            (app_dir / "job.txt").write_text(
+                f"Title:    {job_title}\nCompany:  {company}\nLocation: {location}\n"
+                f"Salary:   {salary or 'not stated'}\nURL:      {job_url}\n"
+                f"Source:   notion\nScore:    {evaluation.get('score', 0)}/10\n\n"
+                f"{'─' * 60}\n\n{description}", encoding="utf-8"
+            )
+            (app_dir / "evaluation.json").write_text(
+                json.dumps(evaluation, indent=2, ensure_ascii=False), encoding="utf-8"
+            )
+        else:
+            eval_path  = matches[0]
+            evaluation = json.loads(eval_path.read_text(encoding="utf-8"))
+            app_dir    = eval_path.parent
 
-        # Read job description from job.txt
-        job_txt = app_dir / "job.txt"
-        description = ""
-        salary = ""
-        if job_txt.exists():
-            raw = job_txt.read_text(encoding="utf-8")
-            for line in raw.splitlines():
-                if line.startswith("Salary:"):
-                    salary = line.split(":", 1)[1].strip()
-            desc_start = raw.find("─" * 10)
-            if desc_start != -1:
-                description = raw[desc_start + 62:].strip()
+            # Read job description from job.txt
+            job_txt = app_dir / "job.txt"
+            description = ""
+            salary = ""
+            if job_txt.exists():
+                raw = job_txt.read_text(encoding="utf-8")
+                for line in raw.splitlines():
+                    if line.startswith("Salary:"):
+                        salary = line.split(":", 1)[1].strip()
+                desc_start = raw.find("─" * 10)
+                if desc_start != -1:
+                    description = raw[desc_start + 62:].strip()
 
         # Reconstruct a minimal JobPosting-like object
         from scraper.base import JobPosting
