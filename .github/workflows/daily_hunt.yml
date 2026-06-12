@@ -69,3 +69,11 @@ jobs:
           name: job-hunter-log-${{ github.run_number }}
           path: job_hunter.log
           retention-days: 7
+
+      - name: Upload run summary
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: job-hunter-summary-${{ github.run_number }}
+          path: data/run_summary.txt
+          retention-days: 30

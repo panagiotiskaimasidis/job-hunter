@@ -24,6 +24,7 @@ import logging
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime
 from pathlib import Path
 
 # ── Pre-flight: make sure setup has been run, with a friendly message ─────────
@@ -77,6 +78,60 @@ def _is_relevant_title(title: str) -> bool:
     """Return False if the job title is obviously not relevant — saves API tokens."""
     t = title.lower()
     return not any(kw in t for kw in _SKIP_TITLE_KEYWORDS)
+
+
+# ── Visa restriction filter ───────────────────────────────────────────────────
+# As an EU (Greek) citizen, Panagiotis can work freely in EU/EEA + Switzerland.
+# Jobs in these regions require a work visa and are filtered out at zero API cost.
+_VISA_RESTRICTED_KEYWORDS = {
+    # USA
+    "united states", " usa", "u.s.a", ", usa",
+    "new york", "san francisco", "los angeles", "california",
+    "chicago", "boston", "seattle", "austin", "houston",
+    "dallas", "denver", "atlanta", "miami", "phoenix",
+    "washington, d.c", "washington dc", "silicon valley",
+    # Canada
+    "canada", "toronto", "vancouver", "montreal", "ottawa", "calgary",
+    # Australia
+    "australia", "sydney", "melbourne", "brisbane", "perth", "adelaide",
+    # New Zealand
+    "new zealand", "auckland", "wellington",
+    # Singapore
+    "singapore",
+    # Japan
+    "japan", "tokyo", "osaka",
+    # China
+    "china", "beijing", "shanghai", "guangzhou", "shenzhen",
+    # South Korea
+    "south korea", "seoul",
+    # India
+    "india", "mumbai", "bangalore", "bengaluru", "delhi", "hyderabad", "pune",
+    # Middle East
+    "saudi arabia", "riyadh", "jeddah",
+    "united arab emirates", "dubai", "abu dhabi",
+    "qatar", "doha",
+    "kuwait", "bahrain", "muscat", "oman",
+    # Southeast Asia
+    "malaysia", "kuala lumpur",
+    "indonesia", "jakarta",
+    "thailand", "bangkok",
+    "vietnam", "hanoi", "ho chi minh",
+    # Latin America
+    "brazil", "sao paulo", "são paulo", "rio de janeiro",
+    "argentina", "buenos aires",
+    "mexico city", "mexico,",
+    # Africa
+    "south africa", "johannesburg", "cape town",
+    "nigeria", "lagos",
+}
+
+
+def _is_visa_accessible(location: str) -> bool:
+    """Return False if the job is in a country requiring a work visa for an EU citizen."""
+    loc = location.lower()
+    return not any(kw in loc for kw in _VISA_RESTRICTED_KEYWORDS)
+
+
 from scraper.base import JobPosting
 from matcher.evaluator import evaluate_job
 from matcher.cv_editor import create_tailored_cv
@@ -85,6 +140,7 @@ from notion.client import create_job_page, get_pending_doc_requests, mark_docs_g
 from notion.feedback import read_feedback, apply_feedback_to_run
 from data.target_companies import is_target_company
 from notifier.email_notifier import send_match_digest
+from matcher.ai_client import get_token_stats, groq_was_exhausted
 
 logging.basicConfig(
     level=logging.INFO,
@@ -133,6 +189,13 @@ def process_job(job: JobPosting) -> dict | None:
     if not _is_relevant_title(job.title):
         logger.info("  → Pre-filtered (irrelevant title): %s", job.title)
         return {"score": 0, "verdict": "FILTERED", "job_id": job.job_id,
+                "title": job.title, "company": job.company,
+                "location": job.location, "url": job.url, "source": job.source}
+
+    # ── Visa restriction filter — zero API tokens ─────────────────────────
+    if not _is_visa_accessible(job.location):
+        logger.info("  → Visa-restricted location (%s): %s @ %s", job.location, job.title, job.company)
+        return {"score": 0, "verdict": "VISA_RESTRICTED", "job_id": job.job_id,
                 "title": job.title, "company": job.company,
                 "location": job.location, "url": job.url, "source": job.source}
 
@@ -409,6 +472,106 @@ def scrape_single_url(url: str) -> JobPosting | None:
         return None
 
 
+# ── Run summary ───────────────────────────────────────────────────────────────
+
+def _write_run_summary(stats: dict, new_matches: list[dict]) -> Path:
+    """Write a human-readable run summary to data/run_summary.txt and return its path."""
+    tok = get_token_stats()
+    groq = tok["groq"]
+    gem  = tok.get("gemini", {})
+    failover = groq_was_exhausted()
+
+    total_req   = groq["requests"] + gem.get("requests", 0)
+    total_prompt = groq["prompt"] + gem.get("prompt", 0)
+    total_comp  = groq["completion"] + gem.get("completion", 0)
+    total_tok   = groq["total"] + gem.get("total", 0)
+
+    # Groq free-tier reference limits for llama-3.3-70b-versatile
+    GROQ_REQ_LIMIT = 14_400
+    groq_req_remaining = max(0, GROQ_REQ_LIMIT - groq["requests"])
+
+    w = 62  # line width
+    sep = "═" * w
+
+    score_labels = {
+        10: "STRONG_MATCH", 9: "STRONG_MATCH",
+        8: "GOOD_MATCH",    7: "GOOD_MATCH",
+        6: "PARTIAL_MATCH", 5: "PARTIAL_MATCH",
+        4: "WEAK_MATCH",    3: "WEAK_MATCH",
+        2: "NO_MATCH",      1: "NO_MATCH",
+    }
+
+    lines = [
+        sep,
+        f"  JOB HUNTER — Run Summary  ·  {stats['run_date']}",
+        sep,
+        "",
+        "SCRAPING",
+        f"  Total raw jobs in database   : {stats['raw_total']:>5}",
+        f"  New (unprocessed this run)   : {stats['jobs_to_evaluate']:>5}",
+        f"  Already seen / skipped       : {stats['already_seen']:>5}",
+        "",
+        "FILTERING  (zero API cost)",
+        f"  Title pre-filter             : {stats['pre_filtered_title']:>5}",
+        f"  Visa-restricted location     : {stats['pre_filtered_visa']:>5}",
+        f"  {'─' * 36}",
+        f"  Passed to AI evaluation      : {stats['ai_evaluated'] + stats['skipped_company_tier'] + stats['evaluation_errors']:>5}",
+        "",
+        "AI EVALUATION",
+        f"  Company tier = SKIP          : {stats['skipped_company_tier']:>5}  (unknown/small company)",
+        f"  Evaluation errors            : {stats['evaluation_errors']:>5}",
+        f"  Scored jobs                  : {stats['ai_evaluated']:>5}",
+    ]
+
+    # Score breakdown
+    sb = stats.get("score_breakdown", {})
+    if any(sb.values()):
+        lines.append("    Score breakdown:")
+        for s in range(10, 0, -1):
+            count = sb.get(s, 0)
+            label = score_labels.get(s, "")
+            lines.append(f"      {s:>2} — {label:<13} : {count:>3}")
+
+    lines += [
+        "",
+        "MATCHES",
+        f"  New matches (score ≥ {stats['min_score']})      : {stats['new_matches']:>5}",
+        f"  Pushed to Notion             : {stats['notion_pushed']:>5}",
+        "",
+        "TOKEN USAGE",
+        f"  {'Provider':<14} {'Requests':>9}  {'Prompt':>10}  {'Completion':>11}  {'Total':>8}",
+        f"  {'─' * 56}",
+        f"  {'Groq':<14} {groq['requests']:>9}  {groq['prompt']:>10,}  {groq['completion']:>11,}  {groq['total']:>8,}",
+        f"  {'Gemini':<14} {gem.get('requests',0):>9}  {gem.get('prompt',0):>10,}  {gem.get('completion',0):>11,}  {gem.get('total',0):>8,}",
+        f"  {'─' * 56}",
+        f"  {'Total':<14} {total_req:>9}  {total_prompt:>10,}  {total_comp:>11,}  {total_tok:>8,}",
+        "",
+        f"  Groq daily quota  (llama-3.3-70b-versatile free tier)",
+        f"    Requests used / limit      : {groq['requests']:>5} / {GROQ_REQ_LIMIT:,}",
+        f"    Est. remaining requests    : {groq_req_remaining:>5,}",
+        f"  Groq→Gemini failover         : {'TRIGGERED' if failover else 'not triggered'}",
+    ]
+
+    # Top matches
+    if new_matches:
+        lines += ["", "TOP NEW MATCHES"]
+        for i, m in enumerate(new_matches[:10], 1):
+            score   = m.get("score", 0)
+            verdict = m.get("verdict", "")
+            title   = m.get("title", "")
+            company = m.get("company", "")
+            loc     = m.get("location", "")
+            lines.append(f"  {i:>2}. [{score:>2}/10] {verdict:<13} — {title} @ {company}  ·  {loc}")
+
+    lines += ["", sep, ""]
+
+    summary_path = config.DATA_DIR / "run_summary.txt"
+    config.DATA_DIR.mkdir(parents=True, exist_ok=True)
+    summary_path.write_text("\n".join(lines), encoding="utf-8")
+    logger.info("[summary] Run summary written → %s", summary_path)
+    return summary_path
+
+
 # ── Entry point ───────────────────────────────────────────────────────────────
 
 def main() -> None:
@@ -465,16 +628,59 @@ def main() -> None:
         jobs = load_unprocessed()
         logger.info("%d unprocessed jobs queued.", len(jobs))
 
+        raw_total = 0
+        if config.JOBS_RAW.exists():
+            try:
+                raw_total = len(json.loads(config.JOBS_RAW.read_text()))
+            except Exception:
+                pass
+
+        stats = {
+            "run_date":            datetime.utcnow().strftime("%Y-%m-%d  %H:%M UTC"),
+            "raw_total":           raw_total,
+            "jobs_to_evaluate":    len(jobs),
+            "already_seen":        max(0, raw_total - len(jobs)),
+            "pre_filtered_title":  0,
+            "pre_filtered_visa":   0,
+            "skipped_company_tier": 0,
+            "evaluation_errors":   0,
+            "ai_evaluated":        0,
+            "score_breakdown":     {s: 0 for s in range(1, 11)},
+            "new_matches":         0,
+            "notion_pushed":       0,
+            "min_score":           config.MIN_MATCH_SCORE,
+        }
+
         processed = _load_processed()
         new_matches: list[dict] = []
 
         for job in jobs:
             record = process_job(job)
             if record:
+                verdict = record.get("verdict", "")
+                score   = record.get("score", 0)
+
+                if verdict == "FILTERED":
+                    stats["pre_filtered_title"] += 1
+                elif verdict == "VISA_RESTRICTED":
+                    stats["pre_filtered_visa"] += 1
+                elif verdict == "SKIPPED":
+                    stats["skipped_company_tier"] += 1
+                elif verdict == "ERROR":
+                    stats["evaluation_errors"] += 1
+                else:
+                    stats["ai_evaluated"] += 1
+                    if 1 <= score <= 10:
+                        stats["score_breakdown"][score] += 1
+
+                if score >= config.MIN_MATCH_SCORE:
+                    new_matches.append(record)
+                    stats["new_matches"] += 1
+                    if record.get("notion_url"):
+                        stats["notion_pushed"] += 1
+
                 processed.append(record)
                 _save_processed(processed)
-                if record.get("score", 0) >= config.MIN_MATCH_SCORE:
-                    new_matches.append(record)
             time.sleep(1)
 
         logger.info("=" * 60)
@@ -485,6 +691,8 @@ def main() -> None:
         if new_matches:
             logger.info("Applications: %s", config.APPLICATIONS_DIR)
             send_match_digest(new_matches)
+
+        _write_run_summary(stats, new_matches)
         logger.info("=" * 60)
 
 

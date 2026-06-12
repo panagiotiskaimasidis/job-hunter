@@ -26,6 +26,43 @@ logger = logging.getLogger(__name__)
 _lock = threading.Lock()
 _groq_exhausted = False   # flipped True the first time Groq 429s without recovery
 
+# ── Token usage tracking ───────────────────────────────────────────────────
+_token_stats: dict = {
+    "groq":   {"requests": 0, "prompt": 0, "completion": 0, "total": 0},
+    "gemini": {"requests": 0, "prompt": 0, "completion": 0, "total": 0},
+}
+_stats_lock = threading.Lock()
+
+
+def _record_groq_usage(usage) -> None:
+    with _stats_lock:
+        _token_stats["groq"]["requests"] += 1
+        if usage:
+            _token_stats["groq"]["prompt"]     += getattr(usage, "prompt_tokens", 0)
+            _token_stats["groq"]["completion"] += getattr(usage, "completion_tokens", 0)
+            _token_stats["groq"]["total"]      += getattr(usage, "total_tokens", 0)
+
+
+def _record_gemini_usage(meta) -> None:
+    with _stats_lock:
+        _token_stats["gemini"]["requests"] += 1
+        if meta:
+            _token_stats["gemini"]["prompt"]     += getattr(meta, "prompt_token_count", 0)
+            _token_stats["gemini"]["completion"] += getattr(meta, "candidates_token_count", 0)
+            _token_stats["gemini"]["total"]      += getattr(meta, "total_token_count", 0)
+
+
+def get_token_stats() -> dict:
+    """Return a snapshot of accumulated token usage for this process run."""
+    with _stats_lock:
+        return {k: v.copy() for k, v in _token_stats.items()}
+
+
+def groq_was_exhausted() -> bool:
+    """Return True if Groq hit its rate limit and Gemini took over."""
+    with _lock:
+        return _groq_exhausted
+
 
 def _mark_groq_exhausted():
     global _groq_exhausted
@@ -55,6 +92,7 @@ def _call_groq(prompt: str, system: str, max_tokens: int) -> str:
                     {"role": "user",   "content": prompt},
                 ],
             )
+            _record_groq_usage(getattr(resp, "usage", None))
             return resp.choices[0].message.content
 
         except Exception as exc:
@@ -103,6 +141,7 @@ def _call_gemini(prompt: str, system: str, max_tokens: int) -> str:
             max_output_tokens=max_tokens,
         ),
     )
+    _record_gemini_usage(getattr(resp, "usage_metadata", None))
     return resp.text
 
 
