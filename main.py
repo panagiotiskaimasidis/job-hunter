@@ -132,6 +132,89 @@ def _is_visa_accessible(location: str) -> bool:
     return not any(kw in loc for kw in _VISA_RESTRICTED_KEYWORDS)
 
 
+# ── Seniority filter ──────────────────────────────────────────────────────────
+# Panagiotis is early-career (MSc graduated Oct 2025, 0–2 years experience).
+# Roles demanding significant seniority are filtered before any AI call.
+_SENIORITY_TITLE_KEYWORDS = {
+    "senior", "sr.", "sr ", "lead ", "leader", "principal", "staff engineer",
+    "head of", "chief", "director", "vp ", "vice president", "manager,",
+    "manager -", "manager –", "engineering manager", "plant manager",
+    "site manager", "general manager", "executive", "expert ", " expert",
+    "specialist iii", "iii ", " iv ", "level 3", "level 4",
+}
+
+# Phrases in the description that signal a senior role requiring more experience
+# than an early-career graduate has. Conservative — only strong signals.
+import re as _re
+_SENIORITY_DESC_PATTERNS = [
+    _re.compile(r"\b(minimum|at least|min\.?|requires?)\s*(?:of\s*)?(\d{1,2})\+?\s*years?", _re.I),
+    _re.compile(r"\b(\d{1,2})\+\s*years?\s+(?:of\s+)?(?:relevant\s+|professional\s+|industry\s+)?experience", _re.I),
+    _re.compile(r"\b(\d{1,2})\s*-\s*\d{1,2}\s*years?\s+(?:of\s+)?experience", _re.I),
+]
+# Below this many required years, an early-career grad is still a plausible fit.
+_MAX_REQUIRED_YEARS = 4
+
+
+def _seniority_ok(title: str, description: str) -> tuple[bool, str]:
+    """Return (ok, reason). False if the role is clearly too senior."""
+    t = title.lower()
+    for kw in _SENIORITY_TITLE_KEYWORDS:
+        if kw in t:
+            return False, f"senior title keyword '{kw.strip()}'"
+
+    desc = description or ""
+    for pat in _SENIORITY_DESC_PATTERNS:
+        for m in pat.finditer(desc):
+            # The years figure is the last numeric group in the match
+            nums = [int(g) for g in m.groups() if g and g.isdigit()]
+            if nums and max(nums) > _MAX_REQUIRED_YEARS:
+                return False, f"requires {max(nums)}+ years experience"
+    return True, ""
+
+
+# ── Language filter ───────────────────────────────────────────────────────────
+# Languages he can work in: English (proficient), French (B2 — working),
+# Greek (native). A role that REQUIRES fluency/native level in any other
+# language is not accessible. Conservative matching to avoid killing the
+# English-language multinational roles he actually wants.
+_BLOCKED_LANGUAGE_REQUIREMENTS = [
+    # German
+    "fluent in german", "fluent german", "native german", "german native",
+    "business fluent german", "german (c1", "german (c2", "german c1", "german c2",
+    "verhandlungssicher", "fließend deutsch", "fliessend deutsch",
+    "sehr gute deutschkenntnisse", "muttersprache deutsch", "deutsch als muttersprache",
+    "german is required", "german language is required", "proficiency in german",
+    # Spanish
+    "fluent in spanish", "native spanish", "spanish native", "spanish (c1", "spanish (c2",
+    "español nativo", "nivel nativo de español", "imprescindible español",
+    "dominio del español", "spanish is required", "proficiency in spanish",
+    # Italian
+    "fluent in italian", "native italian", "italian native", "italian (c1", "italian (c2",
+    "italiano madrelingua", "ottima conoscenza dell'italiano", "italian is required",
+    "proficiency in italian",
+    # Dutch
+    "fluent in dutch", "native dutch", "dutch native", "dutch (c1", "dutch (c2",
+    "vloeiend nederlands", "uitstekende beheersing van het nederlands",
+    "dutch is required", "proficiency in dutch",
+    # Swedish / Nordic
+    "fluent in swedish", "native swedish", "flytande svenska", "swedish is required",
+    "fluent in finnish", "native finnish", "finnish is required",
+    "fluent in danish", "native danish", "fluent in norwegian", "native norwegian",
+    # Other
+    "fluent in portuguese", "native portuguese", "portuguese is required",
+    "fluent in polish", "native polish", "polish is required",
+]
+
+
+def _language_ok(description: str) -> tuple[bool, str]:
+    """Return (ok, reason). False if the role requires a language he lacks."""
+    d = (description or "").lower()
+    for phrase in _BLOCKED_LANGUAGE_REQUIREMENTS:
+        if phrase in d:
+            return False, f"requires language he lacks ('{phrase}')"
+    return True, ""
+
+
 from scraper.base import JobPosting
 from matcher.evaluator import evaluate_job
 from matcher.cv_editor import create_tailored_cv
@@ -196,6 +279,22 @@ def process_job(job: JobPosting) -> dict | None:
     if not _is_visa_accessible(job.location):
         logger.info("  → Visa-restricted location (%s): %s @ %s", job.location, job.title, job.company)
         return {"score": 0, "verdict": "VISA_RESTRICTED", "job_id": job.job_id,
+                "title": job.title, "company": job.company,
+                "location": job.location, "url": job.url, "source": job.source}
+
+    # ── Seniority filter — zero API tokens ────────────────────────────────
+    sen_ok, sen_reason = _seniority_ok(job.title, job.description)
+    if not sen_ok:
+        logger.info("  → Too senior (%s): %s @ %s", sen_reason, job.title, job.company)
+        return {"score": 0, "verdict": "SENIORITY_MISMATCH", "job_id": job.job_id,
+                "title": job.title, "company": job.company,
+                "location": job.location, "url": job.url, "source": job.source}
+
+    # ── Language filter — zero API tokens ─────────────────────────────────
+    lang_ok, lang_reason = _language_ok(job.description)
+    if not lang_ok:
+        logger.info("  → Language mismatch (%s): %s @ %s", lang_reason, job.title, job.company)
+        return {"score": 0, "verdict": "LANGUAGE_MISMATCH", "job_id": job.job_id,
                 "title": job.title, "company": job.company,
                 "location": job.location, "url": job.url, "source": job.source}
 
@@ -514,6 +613,8 @@ def _write_run_summary(stats: dict, new_matches: list[dict]) -> Path:
         "FILTERING  (zero API cost)",
         f"  Title pre-filter             : {stats['pre_filtered_title']:>5}",
         f"  Visa-restricted location     : {stats['pre_filtered_visa']:>5}",
+        f"  Too senior (experience)      : {stats['pre_filtered_seniority']:>5}",
+        f"  Language mismatch            : {stats['pre_filtered_language']:>5}",
         f"  {'─' * 36}",
         f"  Passed to AI evaluation      : {stats['ai_evaluated'] + stats['skipped_company_tier'] + stats['evaluation_errors']:>5}",
         "",
@@ -642,6 +743,8 @@ def main() -> None:
             "already_seen":        max(0, raw_total - len(jobs)),
             "pre_filtered_title":  0,
             "pre_filtered_visa":   0,
+            "pre_filtered_seniority": 0,
+            "pre_filtered_language":  0,
             "skipped_company_tier": 0,
             "evaluation_errors":   0,
             "ai_evaluated":        0,
@@ -664,6 +767,10 @@ def main() -> None:
                     stats["pre_filtered_title"] += 1
                 elif verdict == "VISA_RESTRICTED":
                     stats["pre_filtered_visa"] += 1
+                elif verdict == "SENIORITY_MISMATCH":
+                    stats["pre_filtered_seniority"] += 1
+                elif verdict == "LANGUAGE_MISMATCH":
+                    stats["pre_filtered_language"] += 1
                 elif verdict == "SKIPPED":
                     stats["skipped_company_tier"] += 1
                 elif verdict == "ERROR":

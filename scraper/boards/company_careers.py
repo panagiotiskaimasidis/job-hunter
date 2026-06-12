@@ -76,8 +76,25 @@ TARGET_COMPANIES: list[dict] = [
     {"name": "H2 Green Steel",         "ats": "greenhouse", "slug": "h2greensteel"},
     {"name": "Einride",                "ats": "greenhouse", "slug": "einride"},
     {"name": "Climeworks",             "ats": "greenhouse", "slug": "climeworks"},
+    {"name": "Verkor",                 "ats": "greenhouse", "slug": "verkor"},
+    {"name": "Wayve",                  "ats": "greenhouse", "slug": "wayve"},
+    {"name": "Helsing",                "ats": "greenhouse", "slug": "helsing"},
+    {"name": "Isar Aerospace",         "ats": "greenhouse", "slug": "isaraerospace"},
+    {"name": "The Exploration Company", "ats": "greenhouse", "slug": "theexplorationcompany"},
     # ── Lever ─────────────────────────────────────────────────────────────
     {"name": "Volocopter",             "ats": "lever",      "slug": "volocopter"},
+    {"name": "Wandercraft",            "ats": "lever",      "slug": "wandercraft"},
+    {"name": "Exotec",                 "ats": "lever",      "slug": "exotec"},
+    # ── SmartRecruiters ───────────────────────────────────────────────────
+    # Large multinationals that publish to SmartRecruiters' open API.
+    {"name": "Bosch",                  "ats": "smartrecruiters", "slug": "BoschGroup"},
+    {"name": "Visa",                   "ats": "smartrecruiters", "slug": "Visa"},
+    {"name": "Ubisoft",                "ats": "smartrecruiters", "slug": "Ubisoft"},
+    {"name": "IKEA",                   "ats": "smartrecruiters", "slug": "Ingka"},
+    {"name": "Avery Dennison",         "ats": "smartrecruiters", "slug": "AveryDennison"},
+    {"name": "Equinix",                "ats": "smartrecruiters", "slug": "Equinix"},
+    {"name": "Bayer",                  "ats": "smartrecruiters", "slug": "Bayer"},
+    {"name": "McDonald's",             "ats": "smartrecruiters", "slug": "McDonalds"},
 ]
 
 # Keywords to filter job titles on — aligned with the candidate's profile
@@ -305,6 +322,79 @@ def _scrape_lever(company: dict, max_jobs: int) -> list[JobPosting]:
     return jobs
 
 
+# ── SmartRecruiters scraper ───────────────────────────────────────────────────
+
+def _scrape_smartrecruiters(company: dict, max_jobs: int) -> list[JobPosting]:
+    """
+    SmartRecruiters public Posting API — no auth required.
+      List:   https://api.smartrecruiters.com/v1/companies/{slug}/postings
+      Detail: https://api.smartrecruiters.com/v1/companies/{slug}/postings/{id}
+    The list endpoint omits the description, so we fetch detail per posting
+    (bounded by max_jobs) and pull the job-ad sections.
+    """
+    slug = company["slug"]
+    name = company["name"]
+    jobs: list[JobPosting] = []
+
+    list_url = f"https://api.smartrecruiters.com/v1/companies/{slug}/postings?limit=100"
+    try:
+        with httpx.Client(timeout=15, headers=_HEADERS, follow_redirects=True) as client:
+            resp = client.get(list_url)
+            resp.raise_for_status()
+            postings = resp.json().get("content", [])
+
+            for p in postings:
+                title = p.get("name", "")
+                if not _title_matches(title):
+                    continue
+
+                pid = p.get("id", "")
+                loc = p.get("location", {}) or {}
+                location = ", ".join(
+                    str(v) for v in [loc.get("city"), loc.get("region"), loc.get("country")] if v
+                )
+                job_url = f"https://jobs.smartrecruiters.com/{slug}/{pid}"
+
+                # Fetch the full job ad for the description
+                description = ""
+                try:
+                    d = client.get(f"https://api.smartrecruiters.com/v1/companies/{slug}/postings/{pid}")
+                    if d.status_code == 200:
+                        ad = d.json().get("jobAd", {}).get("sections", {})
+                        parts = [
+                            ad.get("jobDescription", {}).get("text", ""),
+                            ad.get("qualifications", {}).get("text", ""),
+                            ad.get("additionalInformation", {}).get("text", ""),
+                        ]
+                        html = "\n".join(x for x in parts if x)
+                        description = BeautifulSoup(html, "html.parser").get_text(
+                            separator="\n", strip=True
+                        )[:5000]
+                except Exception as exc:
+                    logger.debug("[company_careers] SR detail fetch failed %s: %s", job_url, exc)
+
+                jobs.append(JobPosting(
+                    title=title,
+                    company=name,
+                    location=location,
+                    description=description,
+                    url=job_url,
+                    source="company_careers",
+                    job_id=_job_id(job_url),
+                ))
+
+                if len(jobs) >= max_jobs:
+                    break
+
+        if jobs:
+            logger.info("[company_careers] SmartRecruiters %s → %d jobs", name, len(jobs))
+
+    except Exception as exc:
+        logger.debug("[company_careers] SmartRecruiters %s failed: %s", name, exc)
+
+    return jobs
+
+
 # ── Verified-endpoint scraper ───────────────────────────────────────────────
 
 def _scrape_verified_workday(name: str, endpoint: str, max_jobs: int) -> list[JobPosting]:
@@ -389,6 +479,8 @@ class CompanyCareerscraper(BaseJobScraper):
                     all_jobs.extend(_scrape_greenhouse(company, self.max_jobs))
                 elif ats == "lever":
                     all_jobs.extend(_scrape_lever(company, self.max_jobs))
+                elif ats == "smartrecruiters":
+                    all_jobs.extend(_scrape_smartrecruiters(company, self.max_jobs))
                 time.sleep(self.delay)
             except Exception as exc:
                 logger.error("[company_careers] %s failed: %s", company["name"], exc)

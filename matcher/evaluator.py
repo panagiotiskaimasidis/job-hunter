@@ -50,7 +50,17 @@ def evaluate_job(job: JobPosting) -> dict:
         }
     """
     prompt = f"""
-You are evaluating a job posting for {NAME or "this candidate"}. Score it rigorously.
+You are evaluating a job posting for {NAME or "this candidate"}. Score it rigorously and honestly.
+
+CANDIDATE HARD CONSTRAINTS (non-negotiable):
+- Seniority: EARLY-CAREER. MSc graduated Oct 2025, 0–2 years professional experience.
+  He is NOT a fit for senior, lead, principal, staff, managerial, or "X+ years required"
+  (where X > 4) roles. Graduate / junior / associate / entry-level roles are ideal.
+- Languages he can work in: English (proficient, C2), French (B2 — working proficiency),
+  Greek (native). He does NOT speak German, Spanish, Italian, Dutch, Swedish, Polish,
+  Portuguese, or any other language at a professional level.
+- Work authorisation: EU citizen (Greece). Can work across EU/EEA + Switzerland + UK
+  visa-free or via the UK Graduate route. Roles requiring a non-EU work visa are not viable.
 
 JOB POSTING:
 Title: {job.title}
@@ -59,21 +69,31 @@ Location: {job.location}
 Salary: {job.salary or "not stated"}
 URL: {job.url}
 
-DESCRIPTION (first 800 chars):
-{job.description[:800]}
+DESCRIPTION (first 1200 chars):
+{job.description[:1200]}
 
 ---
-SCORING CRITERIA:
-- CV fit: Does his real experience directly match what the role needs? (40% of score)
-- Career vision fit: Does this role advance his 10-year goals? (30% of score)
-- Growth potential: Will this role challenge him and open elite doors? (20% of score)
-- Practical fit: Location, seniority, language, visa requirements. (10% of score)
+SCORING CRITERIA (weighted):
+- Experience / CV fit: Does his REAL experience and seniority match what the role needs?
+  Is the required experience level realistic for a 0–2 year graduate? (35%)
+- Career vision fit: Does this role advance his 10-year goals? (25%)
+- Practical fit: seniority level, REQUIRED languages vs his (EN/FR/EL), work authorisation,
+  location. (25%)
+- Growth potential: Will this role challenge him and open elite doors? (15%)
+
+HARD RULES (apply BEFORE anything else — these override the weighting):
+1. If the role REQUIRES fluency/native level in a language he lacks (anything other than
+   English, French, or Greek) → score MUST be ≤ 3 and language_fit = "BLOCKER".
+2. If the role is senior/lead/principal/managerial OR demands more than 4 years of
+   experience → score MUST be ≤ 4 and seniority_fit = "TOO_SENIOR".
+3. If the role requires a non-EU work visa (e.g. USA, Canada, UAE, Singapore) → score ≤ 3.
+Only roles that pass ALL hard rules may score 5 or above.
 
 SCORING SCALE:
 9-10: Exceptional — nearly perfect fit, apply immediately
 7-8:  Strong match — clear fit, worth a tailored application
-5-6:  Partial match — some alignment, but notable gaps or misalignments
-3-4:  Weak match — apply only if nothing better available
+5-6:  Partial match — some alignment, but notable gaps
+3-4:  Weak match / blocked by a hard rule
 1-2:  Not a fit — do not waste time
 
 COMPANY TIER — classify the hiring company:
@@ -86,6 +106,9 @@ Return ONLY a JSON object with exactly these keys (no preamble, no markdown):
   "company_tier": "<TOP_CORP|NOTABLE_STARTUP|SKIP>",
   "score": <integer 1-10>,
   "verdict": "<STRONG_MATCH|GOOD_MATCH|PARTIAL_MATCH|WEAK_MATCH|NO_MATCH>",
+  "seniority_fit": "<GOOD|STRETCH|TOO_SENIOR>",
+  "language_fit": "<OK|BLOCKER>",
+  "required_languages": ["<language and level explicitly required by the posting, or 'English only' / 'not stated'>"],
   "one_line_summary": "<20 words max — what this role is and why it fits/doesn't>",
   "why_it_fits": "<2-3 sentences — specific CV evidence that matches the role>",
   "why_it_doesnt_fit": "<1-2 sentences — honest gaps or misalignments, empty string if none>",
@@ -94,7 +117,7 @@ Return ONLY a JSON object with exactly these keys (no preamble, no markdown):
   "career_vision_alignment": "<2-3 sentences — how this role advances his 10-year goals>",
   "career_path_potential": "<2-3 sentences — where this role leads in 3-5 years>",
   "suggested_cv_angles": ["<which experience/bullet to lead with>", "..."],
-  "salary_assessment": "<assessment of whether stated/implied salary matches his 6-figure target, or 'not stated'>"
+  "salary_assessment": "<assessment of whether stated/implied salary matches his target, or 'not stated'>"
 }}
 """
 
