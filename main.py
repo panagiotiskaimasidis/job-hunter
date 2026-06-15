@@ -123,6 +123,9 @@ _VISA_RESTRICTED_KEYWORDS = {
     # Africa
     "south africa", "johannesburg", "cape town",
     "nigeria", "lagos",
+    # France (user preference — not interested in French-located roles)
+    "france", "paris", "lyon", "marseille", "toulouse",
+    "bordeaux", "nantes", "strasbourg", "lille", "nice, fr",
 }
 
 
