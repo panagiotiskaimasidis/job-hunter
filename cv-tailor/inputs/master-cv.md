@@ -7,7 +7,6 @@
 - **Phone:** +30 6980423845
 - **Email:** panagiotiskaimasidis@gmail.com
 - **LinkedIn:** linkedin.com/in/PKaimasidis
-- **GitHub:** [...]
 - **Nationality / Right to Work:** Greek (EU citizen) — open to relocating to Ireland or elsewhere in the EU; no visa sponsorship required for EU roles
 
 ---
@@ -26,57 +25,45 @@ Mechanical & Aeronautical Engineer (MSc, 8.36/10, University of Patras) with han
   - Built physics-based numerical simulations in C to forecast thermal dynamics during Wire Directed Energy Deposition (DED) additive manufacturing
   - Modelled heat transfer and solidification behaviour to predict and mitigate material defects (porosity, residual stress, geometric distortion)
   - Optimised process parameters (wire feed rate, travel speed, heat input) to improve part quality and reduce scrap
-- Key coursework: [Fill in — e.g. Thermodynamics, Fluid Mechanics, Manufacturing Processes, Structural Analysis, Control Systems, FEA, Aerodynamics, Propulsion — use your actual transcript]
 
 ---
 
 ## Engineering & Manufacturing Experience
 
 ### Project Management & Engineering Intern
-**Procter & Gamble (P&G)** | Brussels, Belgium | Aug 2024 – Dec 2024
+**Procter & Gamble (P&G)** | Brussels, Belgium (BIC site) | Aug 2024 – Dec 2024
+*Cross-site collaboration with the Crailsheim Swiffer manufacturing plant (Germany); engineering team of 5 at BIC Brussels.*
 
 - **Process Optimisation:** Redesigned chemical storage and fluid workflow systems, eliminating operational bottlenecks and expanding dosing capacity by **400%** through high-efficiency modular infrastructure
 - **Data-Driven Controls:** Integrated inline flowmeter systems and automated sensor feedback loops to optimise process parameters, maximise dosing accuracy, and significantly reduce process upsets
 - **Reliability & Availability:** Analysed, classified, and catalogued critical engineering spare parts; qualified alternative technical vendors to mitigate supply chain risk and reduce potential equipment downtime
 - **Digital Transformation:** Architected and deployed computer vision quality control (QC) systems on production lines, cutting manual inspection cycles, minimising waste, and boosting automated defect detection
-- *Additional context:* [Any specific products, lines, plant scale, team size, tools/software used at P&G — fill in if you have it]
+- *Tools used:* Siemens Teamcenter (PLM), Power BI, Microsoft Office Suite
 
 ### Health & Safety Engineer (Freelance)
 **New Municipality Court of Piraeus** | Piraeus, Greece | Dec 2025 – Present
 
 - **Operations Leadership:** Directing end-to-end health, safety, and environmental (HSE) operations for the first LEED-certified public facility in Greece; governing safety standards for a daily site workforce of **400+ personnel**
 - **Standardised Compliance:** Authoring and executing site-wide safety protocols, hazard assessments (HIRA), and operational monitoring metrics to achieve alignment with LEED green building standards and Greek national HSE regulations
-- *Additional context:* [Project value, construction type, any incident statistics (e.g. zero LTI), specific Greek regulations followed — fill in if you have it]
+- *Additional context:* [Project value, construction type, any incident statistics (e.g. zero LTI) — fill in if you have it]
 
 ### Aeronautical Engineer Intern
 **Hellenic Air Force** | Andravida Air Base, Greece | July 2023 – Aug 2023
 
-- **Troubleshooting & RCA:** Executed 2nd-degree maintenance actions and systematic Root Cause Analysis (RCA) on F-4 Phantom aircraft powered by General Electric J-79 turbojet engines to restore baseline operational condition
+- **Preventive & Routine Maintenance:** Executed scheduled and preventive maintenance actions on F-4 Phantom aircraft powered by General Electric J-79 turbojet engines, restoring and sustaining baseline operational condition
+- **Troubleshooting & RCA:** Performed systematic Root Cause Analysis (RCA) on propulsion faults; implemented 2nd-degree corrective maintenance to resolve engine anomalies
 - **Run to Standard:** Conducted comprehensive ground testing and real-time performance logging of overhauled propulsion units to validate technical parameters and certify flight-readiness to military standards
-- *Additional context:* [Number of engines maintained, any specific fault types resolved, team size — fill in if you have it]
 
 ---
 
 ## Leadership & Business Experience
 
-### Business Relations Coordinator & Treasurer
+### International Business Relations Coordinator & Treasurer
 **EUROAVIA** (European Association of Aerospace Students) | Patras, Greece | 2020 – Present
 
-- **Sponsorship & Negotiation:** Formulated and executed corporate sponsorship negotiations, securing over **€60,000** in industrial backing from major engineering and commercial partners
+- **International Sponsorship:** Served as the international responsible for all corporate business relations across EUROAVIA's European network, representing the association at major European aerospace congresses and industry events
+- **Fundraising:** Secured over **€65,000** in industrial sponsorship from major engineering and commercial partners within under one year through structured corporate contract negotiations
 - **Financial Governance:** Managed budget allocations, treasury records, and operational expenditure controls for the local branch to optimise cash flow and resource distribution (2021–2022)
-- *Additional context:* [Events organised, number of members, any international EUROAVIA roles — fill in if you have it]
-
----
-
-## Projects
-
-### Job-Scraping Application
-- [Description of the job-scraping app — tech stack, purpose, what problem it solves, scale/results. Fill in.]
-
-### EU261 Flight Cancellation & Compensation Data Model
-- [Description — data sources used, modelling approach, what the interactive dashboard shows, tools used (Python, Tableau, Power BI?). Fill in.]
-
-### Wire DED Additive Manufacturing Simulation *(see Thesis above)*
 
 ---
 
@@ -93,25 +80,25 @@ Mechanical & Aeronautical Engineer (MSc, 8.36/10, University of Patras) with han
 
 ### Software & Tools
 - **PLM / CAD:** Siemens Teamcenter (PLM), CATIA V5, AutoCAD
-- **Simulation / Data:** MATLAB, Python
+- **Data & Reporting:** Power BI, MATLAB, Python
 - **Programming:** C, C#
+- **Productivity:** Microsoft Office Suite
 - **Visualisation / AR:** Unity (AR)
-- **Other:** [Any ERP, SAP, MS Office / Excel proficiency level, specific Python libraries — fill in]
 
 ### Certifications & Training
-- [Any professional certifications — e.g. NEBOSH, IOSH, Six Sigma, PMP, First Aid — fill in or remove]
-- Michigan Proficiency (English) — [Year earned]
-- DELF B2 (French) — [Year earned]
+- Michigan Proficiency — English (2018)
+- DELF B2 — French (2019)
 
 ### Languages
 - **Greek:** Native
-- **English:** Proficient (Michigan Proficiency Certificate)
-- **French:** Competent (DELF B2)
+- **English:** Proficient (Michigan Proficiency Certificate, 2018)
+- **French:** Competent (DELF B2, 2019)
 
 ---
 
 ## Additional Notes for Tailoring
 - EU citizen; no work permit required for Ireland or any EU member state
 - Open to relocation: Ireland (priority), Netherlands, Germany, or other EU hubs
-- Available to start: [Notice period or start date — fill in]
-- Driving licence: [Yes/No, category — fill in]
+- Available to start: 1 month notice
+- Driving licence: Yes, Category B
+- Salary expectation: cost of living of target city/country + 25% minimum

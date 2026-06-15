@@ -24,7 +24,7 @@
 **Constraints / deal-breakers:**
 - Role must have real engineering substance — not purely administrative or desk-bound
 - Must not be anchored to a single factory floor with no exposure beyond it; some project or cross-site scope matters
-- Salary floor: [€X gross — fill in your current minimum number]
+- Salary floor: cost of living for target city/country + 25% minimum (e.g. for Dublin: research current single-person cost of living and add 25%)
 
 ---
 
