@@ -26,7 +26,7 @@ Mechanical & Aeronautical Engineer (MSc, 8.36/10, University of Patras) with han
   - Built physics-based numerical simulations in C to forecast thermal dynamics during Wire Directed Energy Deposition (DED) additive manufacturing
   - Modelled heat transfer and solidification behaviour to predict and mitigate material defects (porosity, residual stress, geometric distortion)
   - Optimised process parameters (wire feed rate, travel speed, heat input) to improve part quality and reduce scrap
-- Key coursework: [e.g. Thermodynamics, Fluid Mechanics, Manufacturing Processes, Structural Analysis, Control Systems, Finite Element Analysis — fill in actual modules]
+- Key coursework: [Fill in — e.g. Thermodynamics, Fluid Mechanics, Manufacturing Processes, Structural Analysis, Control Systems, FEA, Aerodynamics, Propulsion — use your actual transcript]
 
 ---
 
