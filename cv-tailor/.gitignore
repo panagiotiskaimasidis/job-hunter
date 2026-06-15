@@ -1,0 +1,23 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Secrets / personal overrides
+*.env
+.env*
+
+# Compiled / exported
+*.pdf
+*.docx
+*.doc
+
+# Outputs are tracked (they're your application record)
+# Uncomment the line below if you want to exclude them from git
+# outputs/*
+# !outputs/.gitkeep
