@@ -255,13 +255,17 @@ def _safe_name(company: str, title: str) -> str:
 
 # ── Core processing ───────────────────────────────────────────────────────────
 
-def process_job(job: JobPosting) -> dict | None:
+def process_job(job: JobPosting, allow_ai: bool = True) -> dict | None:
     """
     Evaluate one job. If it meets the threshold:
       1. Create application folder  →  applications/[score]_[Company]_[Title]/
       2. Save job.txt and evaluation.json
-      3. Generate tailored CV + cover letter IN PARALLEL (saves ~15s per job)
-      4. Push to Notion (if configured)
+      3. Push to Notion (if configured)
+
+    Free pre-filters (title/visa/seniority/language) always run. The expensive
+    AI evaluation only runs when `allow_ai` is True — otherwise the job is
+    returned with verdict "DEFERRED" so the caller can roll it over to the next
+    run (protecting the daily API quota).
 
     Returns the evaluation record (always), or None on hard error.
     """
@@ -292,6 +296,12 @@ def process_job(job: JobPosting) -> dict | None:
     if not lang_ok:
         logger.info("  → Language mismatch (%s): %s @ %s", lang_reason, job.title, job.company)
         return {"score": 0, "verdict": "LANGUAGE_MISMATCH", "job_id": job.job_id,
+                "title": job.title, "company": job.company,
+                "location": job.location, "url": job.url, "source": job.source}
+
+    # ── AI budget gate — roll this job over to the next run if exhausted ──
+    if not allow_ai:
+        return {"score": 0, "verdict": "DEFERRED", "job_id": job.job_id,
                 "title": job.title, "company": job.company,
                 "location": job.location, "url": job.url, "source": job.source}
 
@@ -466,6 +476,8 @@ def _write_run_summary(stats: dict, new_matches: list[dict]) -> Path:
         f"  Passed to AI evaluation      : {stats['ai_evaluated'] + stats['skipped_company_tier'] + stats['evaluation_errors']:>5}",
         "",
         "AI EVALUATION",
+        f"  AI evals used / cap          : {stats['ai_evaluated'] + stats['skipped_company_tier'] + stats['evaluation_errors']:>5} / {stats['ai_cap']}",
+        f"  Deferred to next run         : {stats['deferred']:>5}",
         f"  Company tier = SKIP          : {stats['skipped_company_tier']:>5}  (unknown/small company)",
         f"  Evaluation errors            : {stats['evaluation_errors']:>5}",
         f"  Scored jobs                  : {stats['ai_evaluated']:>5}",
@@ -593,48 +605,76 @@ def main() -> None:
             "new_matches":         0,
             "notion_pushed":       0,
             "min_score":           config.MIN_MATCH_SCORE,
+            "ai_cap":              config.MAX_AI_EVALS_PER_RUN,
+            "deferred":            0,
         }
+
+        # Verdicts that cost no AI call (free pre-filters)
+        FREE_VERDICTS = {"FILTERED", "VISA_RESTRICTED", "SENIORITY_MISMATCH", "LANGUAGE_MISMATCH"}
 
         processed = _load_processed()
         new_matches: list[dict] = []
+        ai_used = 0
 
         for job in jobs:
-            record = process_job(job)
-            if record:
-                verdict = record.get("verdict", "")
-                score   = record.get("score", 0)
+            allow_ai = ai_used < config.MAX_AI_EVALS_PER_RUN
+            record = process_job(job, allow_ai=allow_ai)
+            if not record:
+                time.sleep(1)
+                continue
 
-                if verdict == "FILTERED":
-                    stats["pre_filtered_title"] += 1
-                elif verdict == "VISA_RESTRICTED":
-                    stats["pre_filtered_visa"] += 1
-                elif verdict == "SENIORITY_MISMATCH":
-                    stats["pre_filtered_seniority"] += 1
-                elif verdict == "LANGUAGE_MISMATCH":
-                    stats["pre_filtered_language"] += 1
-                elif verdict == "SKIPPED":
-                    stats["skipped_company_tier"] += 1
-                elif verdict == "ERROR":
-                    stats["evaluation_errors"] += 1
-                else:
-                    stats["ai_evaluated"] += 1
-                    if 1 <= score <= 10:
-                        stats["score_breakdown"][score] += 1
+            verdict = record.get("verdict", "")
+            score   = record.get("score", 0)
 
-                if score >= config.MIN_MATCH_SCORE:
-                    new_matches.append(record)
-                    stats["new_matches"] += 1
-                    if record.get("notion_url"):
-                        stats["notion_pushed"] += 1
+            # Budget exhausted: leave this job unprocessed so it rolls over.
+            if verdict == "DEFERRED":
+                stats["deferred"] += 1
+                continue
 
-                processed.append(record)
-                _save_processed(processed)
-            time.sleep(1)
+            if verdict == "FILTERED":
+                stats["pre_filtered_title"] += 1
+            elif verdict == "VISA_RESTRICTED":
+                stats["pre_filtered_visa"] += 1
+            elif verdict == "SENIORITY_MISMATCH":
+                stats["pre_filtered_seniority"] += 1
+            elif verdict == "LANGUAGE_MISMATCH":
+                stats["pre_filtered_language"] += 1
+            elif verdict == "SKIPPED":
+                stats["skipped_company_tier"] += 1
+                ai_used += 1
+            elif verdict == "ERROR":
+                stats["evaluation_errors"] += 1
+                ai_used += 1
+            else:
+                stats["ai_evaluated"] += 1
+                ai_used += 1
+                if 1 <= score <= 10:
+                    stats["score_breakdown"][score] += 1
+
+            if score >= config.MIN_MATCH_SCORE:
+                new_matches.append(record)
+                stats["new_matches"] += 1
+                if record.get("notion_url"):
+                    stats["notion_pushed"] += 1
+
+            processed.append(record)
+            _save_processed(processed)
+
+            # Only pause after a real API call — free pre-filters need no delay.
+            if verdict not in FREE_VERDICTS:
+                time.sleep(1)
+
+        if stats["deferred"]:
+            logger.info(
+                "AI cap (%d) reached — %d job(s) deferred to the next run.",
+                config.MAX_AI_EVALS_PER_RUN, stats["deferred"],
+            )
 
         logger.info("=" * 60)
         logger.info(
-            "DONE. %d new matches (score ≥ %d) from %d jobs evaluated.",
-            len(new_matches), config.MIN_MATCH_SCORE, len(jobs),
+            "DONE. %d new matches (score ≥ %d) | %d AI evals used (cap %d) | %d deferred.",
+            len(new_matches), config.MIN_MATCH_SCORE, ai_used,
+            config.MAX_AI_EVALS_PER_RUN, stats["deferred"],
         )
         if new_matches:
             logger.info("Applications: %s", config.APPLICATIONS_DIR)

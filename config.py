@@ -28,6 +28,9 @@ GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
 
 # ── Pipeline settings ──────────────────────────────────────────────────────
 MIN_MATCH_SCORE: int = int(os.getenv("MIN_MATCH_SCORE", "7"))
+# Max AI evaluations per run — protects the free-tier daily quota. Jobs beyond
+# this cap are left unprocessed and roll over to the next run.
+MAX_AI_EVALS_PER_RUN: int = int(os.getenv("MAX_AI_EVALS_PER_RUN", "60"))
 SCRAPE_DELAY_SECONDS: float = float(os.getenv("SCRAPE_DELAY_SECONDS", "1"))
 MAX_JOBS_PER_BOARD: int = int(os.getenv("MAX_JOBS_PER_BOARD", "15"))
 SCRAPE_WORKERS: int = int(os.getenv("SCRAPE_WORKERS", "4"))   # parallel job fetches
