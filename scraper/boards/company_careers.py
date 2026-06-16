@@ -463,6 +463,9 @@ class CompanyCareerscraper(BaseJobScraper):
                 elif ats == "lever":
                     slug = endpoint.split("/postings/")[1].split("?")[0]
                     all_jobs.extend(_scrape_lever({"name": name, "slug": slug}, self.max_jobs))
+                elif ats == "smartrecruiters":
+                    slug = endpoint.split("/companies/")[1].split("/")[0]
+                    all_jobs.extend(_scrape_smartrecruiters({"name": name, "slug": slug}, self.max_jobs))
                 time.sleep(self.delay)
             except Exception as exc:
                 logger.error("[company_careers] verified %s failed: %s", name, exc)
