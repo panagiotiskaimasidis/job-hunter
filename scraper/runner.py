@@ -14,7 +14,6 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import config
 from scraper.base import JobPosting
-from scraper.boards.linkedin import LinkedInScraper
 from scraper.boards.indeed import IndeedScraper
 from scraper.boards.eurojobs import EuroJobsScraper
 from scraper.boards.wttj import WttjScraper
@@ -92,7 +91,6 @@ def run_scraper() -> list[JobPosting]:
 
     # Location-aware boards (query × location loops)
     board_scrapers = [
-        LinkedInScraper(delay_seconds=config.SCRAPE_DELAY_SECONDS, max_jobs=config.MAX_JOBS_PER_BOARD),
         IndeedScraper(delay_seconds=config.SCRAPE_DELAY_SECONDS, max_jobs=config.MAX_JOBS_PER_BOARD),
         EuroJobsScraper(delay_seconds=config.SCRAPE_DELAY_SECONDS, max_jobs=config.MAX_JOBS_PER_BOARD),
         WttjScraper(delay_seconds=config.SCRAPE_DELAY_SECONDS, max_jobs=config.MAX_JOBS_PER_BOARD),
