@@ -30,6 +30,83 @@ def _strip_fences(text: str) -> str:
     return text.strip()
 
 
+# ── Batched triage ──────────────────────────────────────────────────────────
+# A cheap, high-throughput first pass that scores many jobs in a single request
+# using the fast triage model. Only jobs that look promising here are sent for
+# full evaluation, so one run can cover the entire fresh-job pool instead of
+# stalling on per-job rate limits.
+
+_TRIAGE_INSTRUCTIONS = f"""You are rapidly triaging job postings for {NAME or "this candidate"}.
+For EACH job, give a quick fit score from 1-10 using these non-negotiable rules:
+
+- EARLY-CAREER ONLY: MSc graduated Oct 2025, 0-2 years experience. Senior/lead/
+  principal/managerial roles, or roles requiring >4 years experience → score ≤ 4.
+- LANGUAGES: works in English, French (B2), Greek only. If the role REQUIRES
+  fluency in another language (German, Spanish, Italian, Dutch, etc.) → score ≤ 3.
+- WORK AUTH: EU citizen. Roles needing a non-EU visa (USA, Canada, UAE, etc.) → score ≤ 3.
+- Otherwise score by fit to his profile: process / manufacturing / operations /
+  project / mechanical / industrial engineering and graduate programmes at strong
+  employers score highest.
+
+Also classify the company:
+- "TOP_CORP": globally recognised corporation (Fortune 500 / DAX / CAC 40 / FTSE 100).
+- "NOTABLE_STARTUP": funded scale-up or well-known tech/engineering company.
+- "SKIP": unknown SME, tiny local firm, or recruitment agency with no named client.
+
+Return ONLY a compact JSON array, one object per job, no preamble or markdown:
+[{{"id":"<job_id>","s":<1-10>,"t":"<TOP_CORP|NOTABLE_STARTUP|SKIP>"}}]
+Include every job id exactly once."""
+
+
+def triage_batch(jobs: list[JobPosting]) -> dict[str, dict]:
+    """
+    Score a batch of jobs in a single cheap API call.
+
+    Returns {job_id: {"score": int, "tier": str}}. Raises on API/parse failure
+    so the caller can fall back to treating the batch as un-triaged.
+    """
+    if not jobs:
+        return {}
+
+    blocks = []
+    for j in jobs:
+        desc = (j.description or "")[:280].replace("\n", " ")
+        blocks.append(
+            f"id: {j.job_id}\n"
+            f"title: {j.title}\n"
+            f"company: {j.company}\n"
+            f"location: {j.location}\n"
+            f"desc: {desc}"
+        )
+
+    prompt = (
+        _TRIAGE_INSTRUCTIONS
+        + "\n\nJOBS TO TRIAGE:\n"
+        + "\n---\n".join(blocks)
+    )
+
+    raw = _ai_generate(
+        prompt,
+        system=SYSTEM_CONTEXT,
+        max_tokens=80 * len(jobs) + 200,
+        model=config.GROQ_TRIAGE_MODEL,
+        mark_exhausted=False,   # a triage rate-limit must not starve deep evals of Groq
+    )
+    arr = json.loads(_strip_fences(raw))
+
+    out: dict[str, dict] = {}
+    for d in arr:
+        jid = d.get("id")
+        if not jid:
+            continue
+        try:
+            score = int(d.get("s", 0))
+        except (TypeError, ValueError):
+            score = 0
+        out[jid] = {"score": max(0, min(10, score)), "tier": d.get("t", "")}
+    return out
+
+
 def evaluate_job(job: JobPosting) -> dict:
     """
     Score a job posting against the candidate's CV and career vision.

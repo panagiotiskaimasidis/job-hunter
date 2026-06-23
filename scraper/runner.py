@@ -14,10 +14,11 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import config
 from scraper.base import JobPosting
-from scraper.boards.indeed import IndeedScraper
 from scraper.boards.eurojobs import EuroJobsScraper
-from scraper.boards.wttj import WttjScraper
 from scraper.boards.remotive import RemotiveScraper
+from scraper.boards.themuse import TheMuseScraper
+from scraper.boards.arbeitnow import ArbeitnowScraper
+from scraper.boards.jobicy import JobicyScraper
 from scraper.boards.company_careers import CompanyCareerscraper
 
 logger = logging.getLogger(__name__)
@@ -89,16 +90,26 @@ def run_scraper() -> list[JobPosting]:
     existing_ids = {j["job_id"] for j in existing_raw if "job_id" in j}
     workers = getattr(config, "SCRAPE_WORKERS", 4)
 
-    # Location-aware boards (query × location loops)
+    # Location-aware boards (query × location loops). Indeed (Cloudflare-blocked)
+    # and WTTJ (returns HTTP 202 bot-wall) were removed — they cost hundreds of
+    # wasted requests per run and yielded nothing.
     board_scrapers = [
-        IndeedScraper(delay_seconds=config.SCRAPE_DELAY_SECONDS, max_jobs=config.MAX_JOBS_PER_BOARD),
         EuroJobsScraper(delay_seconds=config.SCRAPE_DELAY_SECONDS, max_jobs=config.MAX_JOBS_PER_BOARD),
-        WttjScraper(delay_seconds=config.SCRAPE_DELAY_SECONDS, max_jobs=config.MAX_JOBS_PER_BOARD),
     ]
 
     # Remote-only boards — called once per query, no location loop
     remote_scrapers = [
         RemotiveScraper(delay_seconds=config.SCRAPE_DELAY_SECONDS, max_jobs=config.MAX_JOBS_PER_BOARD),
+    ]
+
+    # Aggregator APIs — keyless JSON feeds with descriptions inline. Each is
+    # called ONCE (they ignore query/location and page through internally), so
+    # they add hundreds of fresh, relevant stubs at a fraction of the request
+    # cost of the query×location loops.
+    aggregator_scrapers = [
+        TheMuseScraper(delay_seconds=config.SCRAPE_DELAY_SECONDS, max_jobs=config.MAX_JOBS_PER_BOARD),
+        ArbeitnowScraper(delay_seconds=config.SCRAPE_DELAY_SECONDS, max_jobs=config.MAX_JOBS_PER_BOARD),
+        JobicyScraper(delay_seconds=config.SCRAPE_DELAY_SECONDS, max_jobs=config.MAX_JOBS_PER_BOARD),
     ]
 
     company_scraper = CompanyCareerscraper(
@@ -178,6 +189,23 @@ def run_scraper() -> list[JobPosting]:
 
             _fetch_descriptions(scraper, fresh_stubs, existing_ids, new_postings, workers)
             time.sleep(config.SCRAPE_DELAY_SECONDS)
+
+    # ── Phase D: Aggregator APIs (called once each, no query/location loop) ──
+    for scraper in aggregator_scrapers:
+        logger.info("[runner] %s (aggregator — single call)", scraper.source_name)
+
+        stubs = list(scraper.search_stubs("", ""))
+        fresh_stubs = [
+            s for s in stubs
+            if s.job_id not in processed_ids and s.job_id not in existing_ids
+        ]
+        logger.info("[runner] %s → %d fresh stubs", scraper.source_name, len(fresh_stubs))
+
+        if not fresh_stubs:
+            continue
+
+        _fetch_descriptions(scraper, fresh_stubs, existing_ids, new_postings, workers)
+        time.sleep(config.SCRAPE_DELAY_SECONDS)
 
     all_raw = existing_raw + [j.to_dict() for j in new_postings]
     _save_raw(all_raw)

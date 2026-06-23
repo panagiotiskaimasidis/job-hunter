@@ -215,7 +215,7 @@ def _language_ok(description: str) -> tuple[bool, str]:
 
 
 from scraper.base import JobPosting
-from matcher.evaluator import evaluate_job
+from matcher.evaluator import evaluate_job, triage_batch
 from notion.client import create_job_page
 from notion.feedback import read_feedback, apply_feedback_to_run
 from data.target_companies import is_target_company
@@ -253,6 +253,45 @@ def _safe_name(company: str, title: str) -> str:
     return "".join(c if c.isalnum() or c in "-_" else "_" for c in raw)[:55]
 
 
+# ── Free pre-filters (zero API cost) ──────────────────────────────────────────
+
+def _free_verdict(job: JobPosting) -> str | None:
+    """
+    Run the four zero-cost pre-filters. Returns a verdict string if the job is
+    rejected, or None if it should pass through to AI evaluation.
+    """
+    if not _is_relevant_title(job.title):
+        logger.info("  → Pre-filtered (irrelevant title): %s", job.title)
+        return "FILTERED"
+
+    if not _is_visa_accessible(job.location):
+        logger.info("  → Visa-restricted location (%s): %s @ %s", job.location, job.title, job.company)
+        return "VISA_RESTRICTED"
+
+    sen_ok, sen_reason = _seniority_ok(job.title, job.description)
+    if not sen_ok:
+        logger.info("  → Too senior (%s): %s @ %s", sen_reason, job.title, job.company)
+        return "SENIORITY_MISMATCH"
+
+    lang_ok, lang_reason = _language_ok(job.description)
+    if not lang_ok:
+        logger.info("  → Language mismatch (%s): %s @ %s", lang_reason, job.title, job.company)
+        return "LANGUAGE_MISMATCH"
+
+    return None
+
+
+def _verdict_record(job: JobPosting, verdict: str, score: int = 0, **extra) -> dict:
+    """Build a lightweight processed-record for a non-deep-evaluated job."""
+    rec = {
+        "score": score, "verdict": verdict, "job_id": job.job_id,
+        "title": job.title, "company": job.company,
+        "location": job.location, "url": job.url, "source": job.source,
+    }
+    rec.update(extra)
+    return rec
+
+
 # ── Core processing ───────────────────────────────────────────────────────────
 
 def process_job(job: JobPosting, allow_ai: bool = True) -> dict | None:
@@ -269,41 +308,14 @@ def process_job(job: JobPosting, allow_ai: bool = True) -> dict | None:
 
     Returns the evaluation record (always), or None on hard error.
     """
-    # ── Keyword pre-filter — zero API tokens ──────────────────────────────
-    if not _is_relevant_title(job.title):
-        logger.info("  → Pre-filtered (irrelevant title): %s", job.title)
-        return {"score": 0, "verdict": "FILTERED", "job_id": job.job_id,
-                "title": job.title, "company": job.company,
-                "location": job.location, "url": job.url, "source": job.source}
-
-    # ── Visa restriction filter — zero API tokens ─────────────────────────
-    if not _is_visa_accessible(job.location):
-        logger.info("  → Visa-restricted location (%s): %s @ %s", job.location, job.title, job.company)
-        return {"score": 0, "verdict": "VISA_RESTRICTED", "job_id": job.job_id,
-                "title": job.title, "company": job.company,
-                "location": job.location, "url": job.url, "source": job.source}
-
-    # ── Seniority filter — zero API tokens ────────────────────────────────
-    sen_ok, sen_reason = _seniority_ok(job.title, job.description)
-    if not sen_ok:
-        logger.info("  → Too senior (%s): %s @ %s", sen_reason, job.title, job.company)
-        return {"score": 0, "verdict": "SENIORITY_MISMATCH", "job_id": job.job_id,
-                "title": job.title, "company": job.company,
-                "location": job.location, "url": job.url, "source": job.source}
-
-    # ── Language filter — zero API tokens ─────────────────────────────────
-    lang_ok, lang_reason = _language_ok(job.description)
-    if not lang_ok:
-        logger.info("  → Language mismatch (%s): %s @ %s", lang_reason, job.title, job.company)
-        return {"score": 0, "verdict": "LANGUAGE_MISMATCH", "job_id": job.job_id,
-                "title": job.title, "company": job.company,
-                "location": job.location, "url": job.url, "source": job.source}
+    # ── Free pre-filters — zero API tokens ────────────────────────────────
+    free = _free_verdict(job)
+    if free is not None:
+        return _verdict_record(job, free)
 
     # ── AI budget gate — roll this job over to the next run if exhausted ──
     if not allow_ai:
-        return {"score": 0, "verdict": "DEFERRED", "job_id": job.job_id,
-                "title": job.title, "company": job.company,
-                "location": job.location, "url": job.url, "source": job.source}
+        return _verdict_record(job, "DEFERRED")
 
     logger.info("Evaluating: %s @ %s", job.title, job.company)
 
@@ -532,6 +544,33 @@ def _write_run_summary(stats: dict, new_matches: list[dict]) -> Path:
     return summary_path
 
 
+# ── Triage cascade ──────────────────────────────────────────────────────────
+
+def _run_triage(jobs: list[JobPosting]) -> dict[str, dict]:
+    """
+    Cheap batched triage of pre-filtered survivors. Returns {job_id: {score, tier}}.
+
+    Each batch is a single low-cost API call on the fast triage model. A batch
+    that fails (rate limit / parse error) is skipped — its jobs simply stay
+    un-triaged and are treated as deep-eval candidates, so triage can only ever
+    reduce the expensive workload, never hide a real match.
+    """
+    scores: dict[str, dict] = {}
+    bs = max(1, config.AI_TRIAGE_BATCH_SIZE)
+    batches = [jobs[i:i + bs] for i in range(0, len(jobs), bs)]
+    logger.info("Triaging %d jobs in %d batch(es) on %s…",
+                len(jobs), len(batches), config.GROQ_TRIAGE_MODEL)
+
+    for n, batch in enumerate(batches, 1):
+        try:
+            scores.update(triage_batch(batch))
+        except Exception as exc:
+            logger.warning("  → Triage batch %d/%d failed (%s) — its jobs kept as candidates",
+                           n, len(batches), exc)
+        time.sleep(0.5)
+    return scores
+
+
 # ── Entry point ───────────────────────────────────────────────────────────────
 
 def main() -> None:
@@ -609,28 +648,16 @@ def main() -> None:
             "deferred":            0,
         }
 
-        # Verdicts that cost no AI call (free pre-filters)
-        FREE_VERDICTS = {"FILTERED", "VISA_RESTRICTED", "SENIORITY_MISMATCH", "LANGUAGE_MISMATCH"}
-
         processed = _load_processed()
         new_matches: list[dict] = []
-        ai_used = 0
 
+        # ── Stage 1: free pre-filters — split rejects from survivors ──────────
+        survivors: list[JobPosting] = []
         for job in jobs:
-            allow_ai = ai_used < config.MAX_AI_EVALS_PER_RUN
-            record = process_job(job, allow_ai=allow_ai)
-            if not record:
-                time.sleep(1)
+            verdict = _free_verdict(job)
+            if verdict is None:
+                survivors.append(job)
                 continue
-
-            verdict = record.get("verdict", "")
-            score   = record.get("score", 0)
-
-            # Budget exhausted: leave this job unprocessed so it rolls over.
-            if verdict == "DEFERRED":
-                stats["deferred"] += 1
-                continue
-
             if verdict == "FILTERED":
                 stats["pre_filtered_title"] += 1
             elif verdict == "VISA_RESTRICTED":
@@ -639,15 +666,71 @@ def main() -> None:
                 stats["pre_filtered_seniority"] += 1
             elif verdict == "LANGUAGE_MISMATCH":
                 stats["pre_filtered_language"] += 1
-            elif verdict == "SKIPPED":
+            processed.append(_verdict_record(job, verdict))
+        _save_processed(processed)
+        logger.info("Pre-filters: %d survivor(s) of %d queued.", len(survivors), len(jobs))
+
+        # Cap how many jobs we triage per run; the overflow rolls over.
+        to_triage = survivors[: config.MAX_TRIAGE_PER_RUN]
+        triage_overflow = survivors[config.MAX_TRIAGE_PER_RUN :]
+        stats["deferred"] += len(triage_overflow)
+
+        # ── Stage 2: cheap batched triage ─────────────────────────────────────
+        triage = _run_triage(to_triage) if to_triage else {}
+
+        # ── Stage 3: choose finalists for full evaluation ─────────────────────
+        floor = config.MIN_MATCH_SCORE - config.TRIAGE_MARGIN
+        if triage:
+            finalists, triaged_out = [], []
+            for job in to_triage:
+                t = triage.get(job.job_id)
+                # Un-triaged jobs (missing from the response) stay candidates.
+                if t is None or t["score"] >= floor:
+                    finalists.append(job)
+                else:
+                    triaged_out.append(job)
+            # Best triage scores first, so the AI budget goes to the strongest jobs.
+            finalists.sort(key=lambda j: triage.get(j.job_id, {}).get("score", floor), reverse=True)
+        else:
+            # Triage unavailable — fall back to deep-evaluating every survivor.
+            finalists, triaged_out = list(to_triage), []
+
+        logger.info("Triage: %d finalist(s) for deep evaluation, %d screened out.",
+                    len(finalists), len(triaged_out))
+
+        # Record triage rejects as processed (scored cheaply, never a match).
+        for job in triaged_out:
+            t = triage.get(job.job_id, {})
+            score = t.get("score", 0)
+            processed.append(_verdict_record(job, "TRIAGED_OUT", score=score,
+                                             company_tier=t.get("tier", "")))
+            stats["ai_evaluated"] += 1
+            if 1 <= score <= 10:
+                stats["score_breakdown"][score] += 1
+        if triaged_out:
+            _save_processed(processed)
+
+        # ── Stage 4: full evaluation of finalists, up to the AI cap ───────────
+        ai_used = 0
+        for job in finalists:
+            if ai_used >= config.MAX_AI_EVALS_PER_RUN:
+                stats["deferred"] += 1   # leave unprocessed → rolls over to next run
+                continue
+
+            record = process_job(job, allow_ai=True)
+            if not record:
+                continue
+            ai_used += 1
+
+            verdict = record.get("verdict", "")
+            score   = record.get("score", 0)
+
+            if verdict == "SKIPPED":
                 stats["skipped_company_tier"] += 1
-                ai_used += 1
             elif verdict == "ERROR":
                 stats["evaluation_errors"] += 1
-                ai_used += 1
             else:
                 stats["ai_evaluated"] += 1
-                ai_used += 1
                 if 1 <= score <= 10:
                     stats["score_breakdown"][score] += 1
 
@@ -659,10 +742,7 @@ def main() -> None:
 
             processed.append(record)
             _save_processed(processed)
-
-            # Only pause after a real API call — free pre-filters need no delay.
-            if verdict not in FREE_VERDICTS:
-                time.sleep(1)
+            time.sleep(1)
 
         if stats["deferred"]:
             logger.info(
@@ -672,7 +752,7 @@ def main() -> None:
 
         logger.info("=" * 60)
         logger.info(
-            "DONE. %d new matches (score ≥ %d) | %d AI evals used (cap %d) | %d deferred.",
+            "DONE. %d new matches (score ≥ %d) | %d deep evals used (cap %d) | %d deferred.",
             len(new_matches), config.MIN_MATCH_SCORE, ai_used,
             config.MAX_AI_EVALS_PER_RUN, stats["deferred"],
         )

@@ -78,14 +78,14 @@ def _groq_available() -> bool:
 
 # ── Groq call ──────────────────────────────────────────────────────────────
 
-def _call_groq(prompt: str, system: str, max_tokens: int) -> str:
+def _call_groq(prompt: str, system: str, max_tokens: int, model: str | None = None) -> str:
     from groq import Groq
     client = Groq(api_key=config.GROQ_API_KEY)
 
     for attempt in range(3):
         try:
             resp = client.chat.completions.create(
-                model=config.GROQ_MODEL,
+                model=model or config.GROQ_MODEL,
                 max_tokens=max_tokens,
                 messages=[
                     {"role": "system", "content": system},
@@ -147,22 +147,32 @@ def _call_gemini(prompt: str, system: str, max_tokens: int) -> str:
 
 # ── Public interface ───────────────────────────────────────────────────────
 
-def generate(prompt: str, system: str = "", max_tokens: int = 1024) -> str:
+def generate(prompt: str, system: str = "", max_tokens: int = 1024,
+             model: str | None = None, mark_exhausted: bool = True) -> str:
     """
     Generate text via Groq first, falling back to Gemini on rate-limit errors.
     Raises on hard errors (bad key, no quota on either provider, etc.).
+
+    `model` overrides the default Groq model for this call (e.g. the cheap
+    triage model). The Gemini failover always uses config.GEMINI_MODEL.
+
+    `mark_exhausted` controls whether a Groq rate-limit on THIS call should
+    permanently route the rest of the run to Gemini. The cheap triage pass sets
+    this False so a triage rate-limit (on the high-throughput triage model)
+    never starves the expensive deep-evaluation calls of Groq.
     """
     # If Groq is known-exhausted, go straight to Gemini
     if _groq_available():
         try:
-            return _call_groq(prompt, system, max_tokens)
+            return _call_groq(prompt, system, max_tokens, model)
         except Exception as exc:
             msg = str(exc)
             is_quota = ("rate_limit" in msg.lower() or "429" in msg
                         or "tokens" in msg.lower() or "quota" in msg.lower()
                         or "connection" in msg.lower() or "timeout" in msg.lower())
             if is_quota and config.GEMINI_API_KEY:
-                _mark_groq_exhausted()
+                if mark_exhausted:
+                    _mark_groq_exhausted()
                 logger.info("[ai_client] Falling back to Gemini for this call")
                 return _call_gemini(prompt, system, max_tokens)
             raise
