@@ -215,12 +215,12 @@ def _language_ok(description: str) -> tuple[bool, str]:
 
 
 from scraper.base import JobPosting
-from matcher.evaluator import evaluate_job, triage_batch
+from matcher.evaluator import evaluate_job, evaluate_batch, triage_batch
 from notion.client import create_job_page
 from notion.feedback import read_feedback, apply_feedback_to_run
 from data.target_companies import is_target_company
 from notifier.email_notifier import send_match_digest
-from matcher.ai_client import get_token_stats, groq_was_exhausted
+from matcher.ai_client import get_token_stats, groq_was_exhausted, gemini_was_exhausted
 
 logging.basicConfig(
     level=logging.INFO,
@@ -290,6 +290,103 @@ def _verdict_record(job: JobPosting, verdict: str, score: int = 0, **extra) -> d
     }
     rec.update(extra)
     return rec
+
+
+# ── Post-evaluation handler ───────────────────────────────────────────────────
+
+def _apply_evaluation(job: JobPosting, evaluation: dict,
+                      stats: dict, processed: list, new_matches: list) -> None:
+    """
+    Apply a completed evaluation dict: tier override, SKIP/ERROR gates,
+    application folder creation, Notion push, and stats/records update.
+    Mutates stats, processed, and new_matches in place.
+    """
+    score       = evaluation.get("score", 0)
+    verdict     = evaluation.get("verdict", "UNKNOWN")
+    company_tier = evaluation.get("company_tier", "UNKNOWN")
+
+    if is_target_company(job.company) and company_tier == "SKIP":
+        logger.info("  → Target company '%s' — overriding SKIP → TOP_CORP", job.company)
+        company_tier = "TOP_CORP"
+        evaluation["company_tier"] = "TOP_CORP"
+
+    logger.info("  %s @ %s → %d/10 [%s] tier=%s",
+                job.title, job.company, score, verdict, company_tier)
+
+    if verdict == "ERROR" or (score == 0 and not verdict.startswith("NO")):
+        stats["evaluation_errors"] += 1
+        processed.append({"score": 0, "verdict": "ERROR",
+                           "job_id": job.job_id, "title": job.title,
+                           "company": job.company, "location": job.location,
+                           "url": job.url, "source": job.source})
+        return
+
+    if company_tier == "SKIP":
+        stats["skipped_company_tier"] += 1
+        processed.append({"score": 0, "verdict": "SKIPPED", "company_tier": "SKIP",
+                           "job_id": job.job_id, "title": job.title,
+                           "company": job.company, "location": job.location,
+                           "url": job.url, "source": job.source})
+        return
+
+    stats["ai_evaluated"] += 1
+    if 1 <= score <= 10:
+        stats["score_breakdown"][score] += 1
+
+    record = {
+        "job_id":            job.job_id,
+        "title":             job.title,
+        "company":           job.company,
+        "location":          job.location,
+        "url":               job.url,
+        "source":            job.source,
+        "score":             score,
+        "verdict":           verdict,
+        "notion_url":        None,
+        "cv_path":           None,
+        "cover_letter_path": None,
+        **evaluation,
+    }
+
+    if score < config.MIN_MATCH_SCORE:
+        processed.append(record)
+        return
+
+    # Match! Create application folder.
+    folder_name = f"{score:02d}_{_safe_name(job.company, job.title)}"
+    app_dir = config.APPLICATIONS_DIR / folder_name
+    app_dir.mkdir(parents=True, exist_ok=True)
+
+    (app_dir / "job.txt").write_text(
+        f"Title:    {job.title}\n"
+        f"Company:  {job.company}\n"
+        f"Location: {job.location}\n"
+        f"Salary:   {job.salary or 'not stated'}\n"
+        f"URL:      {job.url}\n"
+        f"Source:   {job.source}\n"
+        f"Score:    {score}/10  [{verdict}]\n"
+        f"\n{'─' * 60}\n\n"
+        f"{job.description}",
+        encoding="utf-8",
+    )
+    (app_dir / "evaluation.json").write_text(
+        json.dumps(evaluation, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
+
+    try:
+        notion_url = create_job_page(job=job, evaluation=evaluation)
+        record["notion_url"] = notion_url
+        if notion_url:
+            logger.info("  → Notion: %s", notion_url)
+            stats["notion_pushed"] += 1
+        time.sleep(0.4)
+    except Exception as exc:
+        logger.error("  → Notion failed: %s", exc)
+
+    new_matches.append(record)
+    stats["new_matches"] += 1
+    processed.append(record)
+    logger.info("  → Saved to: applications/%s/", folder_name)
 
 
 # ── Core processing ───────────────────────────────────────────────────────────
@@ -447,7 +544,8 @@ def _write_run_summary(stats: dict, new_matches: list[dict]) -> Path:
     tok = get_token_stats()
     groq = tok["groq"]
     gem  = tok.get("gemini", {})
-    failover = groq_was_exhausted()
+    failover       = groq_was_exhausted()
+    gem_exhausted  = gemini_was_exhausted()
 
     total_req   = groq["requests"] + gem.get("requests", 0)
     total_prompt = groq["prompt"] + gem.get("prompt", 0)
@@ -522,6 +620,7 @@ def _write_run_summary(stats: dict, new_matches: list[dict]) -> Path:
         f"    Requests used / limit      : {groq['requests']:>5} / {GROQ_REQ_LIMIT:,}",
         f"    Est. remaining requests    : {groq_req_remaining:>5,}",
         f"  Groq→Gemini failover         : {'TRIGGERED' if failover else 'not triggered'}",
+        f"  Gemini quota exhausted       : {'YES' if gem_exhausted else 'no'}",
     ]
 
     # Top matches
@@ -710,39 +809,40 @@ def main() -> None:
         if triaged_out:
             _save_processed(processed)
 
-        # ── Stage 4: full evaluation of finalists, up to the AI cap ───────────
-        ai_used = 0
-        for job in finalists:
-            if ai_used >= config.MAX_AI_EVALS_PER_RUN:
-                stats["deferred"] += 1   # leave unprocessed → rolls over to next run
-                continue
+        # ── Stage 4: batched deep evaluation of finalists ─────────────────────
+        # Each batch covers DEEP_EVAL_BATCH_SIZE jobs in a single API call,
+        # cutting requests ~4× and token overhead ~50% vs individual calls.
+        DEEP_BATCH  = config.DEEP_EVAL_BATCH_SIZE
+        INTER_SLEEP = config.DEEP_EVAL_INTER_BATCH_SLEEP
 
-            record = process_job(job, allow_ai=True)
-            if not record:
-                continue
-            ai_used += 1
+        # Trim to the AI cap; leave the overflow unprocessed (rolls over).
+        eval_queue = finalists[: config.MAX_AI_EVALS_PER_RUN]
+        overflow   = finalists[config.MAX_AI_EVALS_PER_RUN :]
+        stats["deferred"] += len(overflow)
 
-            verdict = record.get("verdict", "")
-            score   = record.get("score", 0)
+        batches = [eval_queue[i : i + DEEP_BATCH]
+                   for i in range(0, len(eval_queue), DEEP_BATCH)]
+        logger.info("Deep evaluating %d finalist(s) in %d batch(es) of up to %d…",
+                    len(eval_queue), len(batches), DEEP_BATCH)
 
-            if verdict == "SKIPPED":
-                stats["skipped_company_tier"] += 1
-            elif verdict == "ERROR":
-                stats["evaluation_errors"] += 1
-            else:
-                stats["ai_evaluated"] += 1
-                if 1 <= score <= 10:
-                    stats["score_breakdown"][score] += 1
+        for batch_idx, batch in enumerate(batches, 1):
+            logger.info("  [batch %d/%d] evaluating %d job(s)…",
+                        batch_idx, len(batches), len(batch))
+            evaluations = evaluate_batch(batch)
 
-            if score >= config.MIN_MATCH_SCORE:
-                new_matches.append(record)
-                stats["new_matches"] += 1
-                if record.get("notion_url"):
-                    stats["notion_pushed"] += 1
+            id_to_job = {j.job_id: j for j in batch}
+            for ev in evaluations:
+                jid = ev.get("job_id") or ev.get("job_id", "")
+                job = id_to_job.get(jid)
+                if not job:
+                    continue
+                _apply_evaluation(job, ev, stats, processed, new_matches)
 
-            processed.append(record)
             _save_processed(processed)
-            time.sleep(1)
+
+            if batch_idx < len(batches):
+                logger.info("  → Pacing: %ds before next batch…", INTER_SLEEP)
+                time.sleep(INTER_SLEEP)
 
         if stats["deferred"]:
             logger.info(
@@ -750,10 +850,11 @@ def main() -> None:
                 config.MAX_AI_EVALS_PER_RUN, stats["deferred"],
             )
 
+        total_evals = stats["ai_evaluated"] + stats["skipped_company_tier"] + stats["evaluation_errors"]
         logger.info("=" * 60)
         logger.info(
-            "DONE. %d new matches (score ≥ %d) | %d deep evals used (cap %d) | %d deferred.",
-            len(new_matches), config.MIN_MATCH_SCORE, ai_used,
+            "DONE. %d new matches (score ≥ %d) | %d deep evals (cap %d) | %d deferred.",
+            len(new_matches), config.MIN_MATCH_SCORE, total_evals,
             config.MAX_AI_EVALS_PER_RUN, stats["deferred"],
         )
         if new_matches:

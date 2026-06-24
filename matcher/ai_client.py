@@ -24,7 +24,10 @@ logger = logging.getLogger(__name__)
 
 # ── Provider state (process-global, thread-safe) ───────────────────────────
 _lock = threading.Lock()
-_groq_exhausted = False   # flipped True the first time Groq 429s without recovery
+_groq_exhausted   = False   # flipped True the first time Groq 429s without recovery
+_gemini_exhausted = False   # flipped True after GEMINI_MAX_ERRORS consecutive 429s
+_GEMINI_MAX_ERRORS = 3
+_gemini_error_count = 0     # consecutive Gemini quota errors (reset on success)
 
 # ── Token usage tracking ───────────────────────────────────────────────────
 _token_stats: dict = {
@@ -64,6 +67,12 @@ def groq_was_exhausted() -> bool:
         return _groq_exhausted
 
 
+def gemini_was_exhausted() -> bool:
+    """Return True if Gemini hit its quota limit during this run."""
+    with _lock:
+        return _gemini_exhausted
+
+
 def _mark_groq_exhausted():
     global _groq_exhausted
     with _lock:
@@ -71,9 +80,21 @@ def _mark_groq_exhausted():
     logger.warning("[ai_client] Groq exhausted — switching to Gemini for remainder of run")
 
 
+def _mark_gemini_exhausted():
+    global _gemini_exhausted
+    with _lock:
+        _gemini_exhausted = True
+    logger.warning("[ai_client] Gemini also exhausted — both providers at quota")
+
+
 def _groq_available() -> bool:
     with _lock:
         return not _groq_exhausted
+
+
+def _gemini_available() -> bool:
+    with _lock:
+        return not _gemini_exhausted
 
 
 # ── Groq call ──────────────────────────────────────────────────────────────
@@ -109,9 +130,11 @@ def _call_groq(prompt: str, system: str, max_tokens: int, model: str | None = No
                     wait = int(m.group(1)) * 60 + float(m.group(2)) + 5
                 else:
                     wait = 2 ** attempt * 20  # 20s, 40s
-                # If wait > 60s, don't wait — immediately fail over to Gemini
-                if wait > 60:
-                    logger.warning("[ai_client] Groq wants %ds wait — failing over to Gemini immediately", int(wait))
+                # If wait > 180s, fail over immediately (Gemini is checked by caller)
+                # Otherwise always wait — failing over to Gemini when it's also
+                # exhausted just produces 52/60 errors; waiting and retrying wins.
+                if wait > 180:
+                    logger.warning("[ai_client] Groq wants %ds wait — failing over", int(wait))
                     raise  # triggers failover in caller
                 logger.warning("[ai_client] Groq rate limit — waiting %ds (attempt %d/3)", int(wait), attempt + 1)
                 time.sleep(wait)
@@ -128,21 +151,36 @@ def _call_groq(prompt: str, system: str, max_tokens: int, model: str | None = No
 # ── Gemini call ────────────────────────────────────────────────────────────
 
 def _call_gemini(prompt: str, system: str, max_tokens: int) -> str:
+    global _gemini_error_count
     from google import genai
     from google.genai import types
 
     client = genai.Client(api_key=config.GEMINI_API_KEY)
 
-    resp = client.models.generate_content(
-        model=config.GEMINI_MODEL,
-        contents=prompt,
-        config=types.GenerateContentConfig(
-            system_instruction=system,
-            max_output_tokens=max_tokens,
-        ),
-    )
-    _record_gemini_usage(getattr(resp, "usage_metadata", None))
-    return resp.text
+    try:
+        resp = client.models.generate_content(
+            model=config.GEMINI_MODEL,
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                system_instruction=system,
+                max_output_tokens=max_tokens,
+            ),
+        )
+        _record_gemini_usage(getattr(resp, "usage_metadata", None))
+        # Reset consecutive error count on success
+        with _stats_lock:
+            _gemini_error_count = 0
+        return resp.text
+    except Exception as exc:
+        msg = str(exc)
+        is_quota = "429" in msg or "quota" in msg.lower() or "rate" in msg.lower()
+        if is_quota:
+            with _stats_lock:
+                _gemini_error_count += 1
+                count = _gemini_error_count
+            if count >= _GEMINI_MAX_ERRORS:
+                _mark_gemini_exhausted()
+        raise
 
 
 # ── Public interface ───────────────────────────────────────────────────────
@@ -170,13 +208,18 @@ def generate(prompt: str, system: str = "", max_tokens: int = 1024,
             is_quota = ("rate_limit" in msg.lower() or "429" in msg
                         or "tokens" in msg.lower() or "quota" in msg.lower()
                         or "connection" in msg.lower() or "timeout" in msg.lower())
-            if is_quota and config.GEMINI_API_KEY:
+            if is_quota and config.GEMINI_API_KEY and _gemini_available():
                 if mark_exhausted:
                     _mark_groq_exhausted()
                 logger.info("[ai_client] Falling back to Gemini for this call")
                 return _call_gemini(prompt, system, max_tokens)
+            if is_quota and not _gemini_available():
+                logger.warning("[ai_client] Groq quota hit and Gemini exhausted — raising")
             raise
 
-    # Groq exhausted — use Gemini directly
-    logger.debug("[ai_client] Using Gemini (Groq exhausted)")
-    return _call_gemini(prompt, system, max_tokens)
+    # Groq exhausted — use Gemini if available
+    if _gemini_available():
+        logger.debug("[ai_client] Using Gemini (Groq exhausted)")
+        return _call_gemini(prompt, system, max_tokens)
+
+    raise RuntimeError("Both Groq and Gemini are quota-exhausted for this run")

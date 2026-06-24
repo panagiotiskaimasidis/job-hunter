@@ -20,6 +20,7 @@ from scraper.boards.themuse import TheMuseScraper
 from scraper.boards.arbeitnow import ArbeitnowScraper
 from scraper.boards.jobicy import JobicyScraper
 from scraper.boards.company_careers import CompanyCareerscraper
+from scraper.boards.remoteok import RemoteOKScraper
 
 logger = logging.getLogger(__name__)
 
@@ -110,6 +111,7 @@ def run_scraper() -> list[JobPosting]:
         TheMuseScraper(delay_seconds=config.SCRAPE_DELAY_SECONDS, max_jobs=config.MAX_JOBS_PER_BOARD),
         ArbeitnowScraper(delay_seconds=config.SCRAPE_DELAY_SECONDS, max_jobs=config.MAX_JOBS_PER_BOARD),
         JobicyScraper(delay_seconds=config.SCRAPE_DELAY_SECONDS, max_jobs=config.MAX_JOBS_PER_BOARD),
+        RemoteOKScraper(delay_seconds=config.SCRAPE_DELAY_SECONDS, max_jobs=config.MAX_JOBS_PER_BOARD),
     ]
 
     company_scraper = CompanyCareerscraper(
