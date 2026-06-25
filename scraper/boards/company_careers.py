@@ -1,16 +1,16 @@
 """
 Direct company career page scraper.
 
-Supports three ATS platforms that cover the majority of target companies:
-  - Workday   → P&G, Shell, Siemens, GE, Unilever, ABB, Bosch, BMW, BASF, Airbus, Rolls-Royce…
-  - Greenhouse → SpaceX (not public), Rimac, Northvolt, many Series A+ startups
-  - Lever      → another common startup ATS
+Supports four ATS platforms that cover the majority of target companies:
+  - Workday         → P&G, Shell, Siemens, GE, Unilever, ABB, Bosch, BMW, BASF, Airbus…
+  - Greenhouse      → Northvolt, Rimac, Isar, Celonis, Arrival, ZeroAvia, FlixBus…
+  - Lever           → Volocopter, Exotec, Wandercraft, TIER Mobility…
+  - SmartRecruiters → Continental, ZF, Vestas, Nokia, KONE, Schindler, Wärtsilä…
+  - AshbyHQ         → newer European deep-tech / sustainability startups
 
-Also supports a handful of companies with bespoke career sites.
-
-Each company entry in TARGET_COMPANIES specifies:
-  - ats:  "workday" | "greenhouse" | "lever" | "custom"
-  - slug: the subdomain or org identifier used by the ATS
+Each entry in TARGET_COMPANIES specifies:
+  - ats:  "workday" | "greenhouse" | "lever" | "smartrecruiters" | "ashby"
+  - slug: the subdomain / org identifier used by the ATS
   - url:  (custom only) direct URL to scrape
 
 No query/location loops — we go straight to the source and filter by keyword.
@@ -49,63 +49,159 @@ def _load_verified() -> dict:
 # Add / remove entries freely. slug = the Workday/Greenhouse tenant identifier.
 TARGET_COMPANIES: list[dict] = [
     # ── Workday ────────────────────────────────────────────────────────────
-    {"name": "Procter & Gamble",      "ats": "workday",    "slug": "pg"},
-    {"name": "Shell",                  "ats": "workday",    "slug": "shell"},
-    {"name": "Siemens",                "ats": "workday",    "slug": "siemens"},
-    {"name": "GE Vernova",             "ats": "workday",    "slug": "gevernova"},
-    {"name": "Unilever",               "ats": "workday",    "slug": "unilever"},
-    {"name": "ABB",                    "ats": "workday",    "slug": "abb"},
-    {"name": "Bosch",                  "ats": "workday",    "slug": "bosch"},
-    {"name": "BMW Group",              "ats": "workday",    "slug": "bmwgroup"},
-    {"name": "BASF",                   "ats": "workday",    "slug": "basf"},
-    {"name": "Rolls-Royce",            "ats": "workday",    "slug": "rollsroyce"},
-    {"name": "Airbus",                 "ats": "workday",    "slug": "airbus"},
-    {"name": "Philips",                "ats": "workday",    "slug": "philips"},
-    {"name": "Nestlé",                 "ats": "workday",    "slug": "nestle"},
-    {"name": "Schneider Electric",     "ats": "workday",    "slug": "schneiderelectric"},
-    {"name": "Honeywell",              "ats": "workday",    "slug": "honeywell"},
-    {"name": "Eaton",                  "ats": "workday",    "slug": "eaton"},
-    {"name": "Danone",                 "ats": "workday",    "slug": "danone"},
-    {"name": "Safran",                 "ats": "workday",    "slug": "safran"},
-    {"name": "Thales",                 "ats": "workday",    "slug": "thales"},
-    {"name": "Leonardo",               "ats": "workday",    "slug": "leonardo"},
-    # ── Greenhouse ────────────────────────────────────────────────────────
-    {"name": "Northvolt",              "ats": "greenhouse", "slug": "northvolt"},
-    {"name": "Rimac Technology",       "ats": "greenhouse", "slug": "rimac"},
-    {"name": "Lilium",                 "ats": "greenhouse", "slug": "lilium"},
-    {"name": "H2 Green Steel",         "ats": "greenhouse", "slug": "h2greensteel"},
-    {"name": "Einride",                "ats": "greenhouse", "slug": "einride"},
-    {"name": "Climeworks",             "ats": "greenhouse", "slug": "climeworks"},
-    {"name": "Verkor",                 "ats": "greenhouse", "slug": "verkor"},
-    {"name": "Wayve",                  "ats": "greenhouse", "slug": "wayve"},
-    {"name": "Helsing",                "ats": "greenhouse", "slug": "helsing"},
-    {"name": "Isar Aerospace",         "ats": "greenhouse", "slug": "isaraerospace"},
-    {"name": "The Exploration Company", "ats": "greenhouse", "slug": "theexplorationcompany"},
-    # ── Lever ─────────────────────────────────────────────────────────────
-    {"name": "Volocopter",             "ats": "lever",      "slug": "volocopter"},
-    {"name": "Wandercraft",            "ats": "lever",      "slug": "wandercraft"},
-    {"name": "Exotec",                 "ats": "lever",      "slug": "exotec"},
-    # ── SmartRecruiters ───────────────────────────────────────────────────
-    # Large multinationals that publish to SmartRecruiters' open API.
-    {"name": "Bosch",                  "ats": "smartrecruiters", "slug": "BoschGroup"},
-    {"name": "Visa",                   "ats": "smartrecruiters", "slug": "Visa"},
-    {"name": "Ubisoft",                "ats": "smartrecruiters", "slug": "Ubisoft"},
-    {"name": "IKEA",                   "ats": "smartrecruiters", "slug": "Ingka"},
-    {"name": "Avery Dennison",         "ats": "smartrecruiters", "slug": "AveryDennison"},
-    {"name": "Equinix",                "ats": "smartrecruiters", "slug": "Equinix"},
-    {"name": "Bayer",                  "ats": "smartrecruiters", "slug": "Bayer"},
-    {"name": "McDonald's",             "ats": "smartrecruiters", "slug": "McDonalds"},
+    # Slug = the subdomain at {slug}.wd{N}.myworkdayjobs.com
+    {"name": "Procter & Gamble",       "ats": "workday",         "slug": "pg"},
+    {"name": "Shell",                   "ats": "workday",         "slug": "shell"},
+    {"name": "Siemens",                 "ats": "workday",         "slug": "siemens"},
+    {"name": "GE Vernova",              "ats": "workday",         "slug": "gevernova"},
+    {"name": "Unilever",                "ats": "workday",         "slug": "unilever"},
+    {"name": "ABB",                     "ats": "workday",         "slug": "abb"},
+    {"name": "Bosch",                   "ats": "workday",         "slug": "bosch"},
+    {"name": "BMW Group",               "ats": "workday",         "slug": "bmwgroup"},
+    {"name": "BASF",                    "ats": "workday",         "slug": "basf"},
+    {"name": "Rolls-Royce",             "ats": "workday",         "slug": "rollsroyce"},
+    {"name": "Airbus",                  "ats": "workday",         "slug": "airbus"},
+    {"name": "Philips",                 "ats": "workday",         "slug": "philips"},
+    {"name": "Nestlé",                  "ats": "workday",         "slug": "nestle"},
+    {"name": "Schneider Electric",      "ats": "workday",         "slug": "schneiderelectric"},
+    {"name": "Honeywell",               "ats": "workday",         "slug": "honeywell"},
+    {"name": "Eaton",                   "ats": "workday",         "slug": "eaton"},
+    {"name": "Danone",                  "ats": "workday",         "slug": "danone"},
+    {"name": "Safran",                  "ats": "workday",         "slug": "safran"},
+    {"name": "Thales",                  "ats": "workday",         "slug": "thales"},
+    {"name": "Leonardo",                "ats": "workday",         "slug": "leonardo"},
+    {"name": "TotalEnergies",           "ats": "workday",         "slug": "totalenergies"},
+    {"name": "Equinor",                 "ats": "workday",         "slug": "equinor"},
+    {"name": "BP",                      "ats": "workday",         "slug": "bpexternal"},
+    {"name": "Volvo Cars",              "ats": "workday",         "slug": "volvocars"},
+    {"name": "Valeo",                   "ats": "workday",         "slug": "valeo"},
+    {"name": "Saint-Gobain",            "ats": "workday",         "slug": "saint-gobain"},
+    {"name": "Michelin",                "ats": "workday",         "slug": "michelin"},
+    {"name": "Air Liquide",             "ats": "workday",         "slug": "airliquide"},
+    {"name": "Solvay",                  "ats": "workday",         "slug": "solvay"},
+    {"name": "Danaher",                 "ats": "workday",         "slug": "danaher"},
+    {"name": "Parker Hannifin",         "ats": "workday",         "slug": "parker"},
+    {"name": "Emerson Electric",        "ats": "workday",         "slug": "emerson"},
+    {"name": "Rockwell Automation",     "ats": "workday",         "slug": "rockwellautomation"},
+    # ── Greenhouse ─────────────────────────────────────────────────────────
+    # Public API — descriptions included. 404 on wrong slug, caught gracefully.
+    {"name": "Northvolt",               "ats": "greenhouse",      "slug": "northvolt"},
+    {"name": "Rimac Technology",        "ats": "greenhouse",      "slug": "rimac"},
+    {"name": "Lilium",                  "ats": "greenhouse",      "slug": "lilium"},
+    {"name": "H2 Green Steel",          "ats": "greenhouse",      "slug": "h2greensteel"},
+    {"name": "Einride",                 "ats": "greenhouse",      "slug": "einride"},
+    {"name": "Climeworks",              "ats": "greenhouse",      "slug": "climeworks"},
+    {"name": "Verkor",                  "ats": "greenhouse",      "slug": "verkor"},
+    {"name": "Wayve",                   "ats": "greenhouse",      "slug": "wayve"},
+    {"name": "Helsing",                 "ats": "greenhouse",      "slug": "helsing"},
+    {"name": "Isar Aerospace",          "ats": "greenhouse",      "slug": "isaraerospace"},
+    {"name": "The Exploration Company", "ats": "greenhouse",      "slug": "theexplorationcompany"},
+    {"name": "Celonis",                 "ats": "greenhouse",      "slug": "celonis"},
+    {"name": "Arrival",                 "ats": "greenhouse",      "slug": "arrival"},
+    {"name": "ZeroAvia",                "ats": "greenhouse",      "slug": "zeroavia"},
+    {"name": "Vertical Aerospace",      "ats": "greenhouse",      "slug": "verticalaerospace"},
+    {"name": "Heart Aerospace",         "ats": "greenhouse",      "slug": "heartaerospace"},
+    {"name": "Astroscale",              "ats": "greenhouse",      "slug": "astroscale"},
+    {"name": "FlixMobility",            "ats": "greenhouse",      "slug": "flixmobility"},
+    {"name": "Personio",                "ats": "greenhouse",      "slug": "personio"},
+    {"name": "Delivery Hero",           "ats": "greenhouse",      "slug": "delivery-hero"},
+    {"name": "Tier Mobility",           "ats": "greenhouse",      "slug": "tier"},
+    {"name": "Lilium Jet",              "ats": "greenhouse",      "slug": "liliumjet"},
+    {"name": "Voith",                   "ats": "greenhouse",      "slug": "voith"},
+    {"name": "Tractable",               "ats": "greenhouse",      "slug": "tractable"},
+    {"name": "Ably",                    "ats": "greenhouse",      "slug": "ably"},
+    {"name": "Samsara",                 "ats": "greenhouse",      "slug": "samsara"},
+    # ── Lever ──────────────────────────────────────────────────────────────
+    # Public API — descriptions included inline.
+    {"name": "Volocopter",              "ats": "lever",           "slug": "volocopter"},
+    {"name": "Wandercraft",             "ats": "lever",           "slug": "wandercraft"},
+    {"name": "Exotec",                  "ats": "lever",           "slug": "exotec"},
+    {"name": "Voi Technology",          "ats": "lever",           "slug": "voi"},
+    {"name": "Cargo.one",               "ats": "lever",           "slug": "cargo-one"},
+    {"name": "Skyports",                "ats": "lever",           "slug": "skyports"},
+    {"name": "Open Robotics",           "ats": "lever",           "slug": "openrobotics"},
+    {"name": "Porsche Digital",         "ats": "lever",           "slug": "porschedigital"},
+    {"name": "Hy24",                    "ats": "lever",           "slug": "hy24"},
+    {"name": "Sunfire",                 "ats": "lever",           "slug": "sunfire"},
+    # ── SmartRecruiters ────────────────────────────────────────────────────
+    # Public API — list endpoint + per-posting detail fetch for description.
+    {"name": "Bosch Group",             "ats": "smartrecruiters", "slug": "BoschGroup"},
+    {"name": "Visa",                    "ats": "smartrecruiters", "slug": "Visa"},
+    {"name": "Ubisoft",                 "ats": "smartrecruiters", "slug": "Ubisoft"},
+    {"name": "IKEA",                    "ats": "smartrecruiters", "slug": "Ingka"},
+    {"name": "Avery Dennison",          "ats": "smartrecruiters", "slug": "AveryDennison"},
+    {"name": "Equinix",                 "ats": "smartrecruiters", "slug": "Equinix"},
+    {"name": "Bayer",                   "ats": "smartrecruiters", "slug": "Bayer"},
+    {"name": "Continental",             "ats": "smartrecruiters", "slug": "Continental"},
+    {"name": "ZF Group",                "ats": "smartrecruiters", "slug": "ZF"},
+    {"name": "Vestas",                  "ats": "smartrecruiters", "slug": "Vestas"},
+    {"name": "Nokia",                   "ats": "smartrecruiters", "slug": "Nokia"},
+    {"name": "Ericsson",                "ats": "smartrecruiters", "slug": "Ericsson"},
+    {"name": "KONE",                    "ats": "smartrecruiters", "slug": "Kone"},
+    {"name": "Schindler",               "ats": "smartrecruiters", "slug": "Schindler"},
+    {"name": "Wärtsilä",                "ats": "smartrecruiters", "slug": "Wartsila"},
+    {"name": "Atlas Copco",             "ats": "smartrecruiters", "slug": "AtlasCopco"},
+    {"name": "Sandvik",                 "ats": "smartrecruiters", "slug": "Sandvik"},
+    {"name": "SKF",                     "ats": "smartrecruiters", "slug": "SKF"},
+    {"name": "Volvo Group",             "ats": "smartrecruiters", "slug": "VolvoGroup"},
+    {"name": "Scania",                  "ats": "smartrecruiters", "slug": "Scania"},
+    {"name": "Siemens Energy",          "ats": "smartrecruiters", "slug": "SiemensEnergy"},
+    {"name": "Siemens Healthineers",    "ats": "smartrecruiters", "slug": "SiemensHealthineers"},
+    {"name": "Neste",                   "ats": "smartrecruiters", "slug": "Neste"},
+    {"name": "Metso",                   "ats": "smartrecruiters", "slug": "Metso"},
+    {"name": "Epiroc",                  "ats": "smartrecruiters", "slug": "Epiroc"},
+    {"name": "Fortum",                  "ats": "smartrecruiters", "slug": "Fortum"},
+    {"name": "AGCO",                    "ats": "smartrecruiters", "slug": "AGCO"},
+    {"name": "CNH Industrial",          "ats": "smartrecruiters", "slug": "CNHIndustrial"},
+    {"name": "Knorr-Bremse",            "ats": "smartrecruiters", "slug": "KnorrBremse"},
+    {"name": "Deutz",                   "ats": "smartrecruiters", "slug": "DEUTZ"},
+    {"name": "Alfa Laval",              "ats": "smartrecruiters", "slug": "AlfaLaval"},
+    # ── AshbyHQ ────────────────────────────────────────────────────────────
+    # European deep-tech / sustainability startups that moved to Ashby.
+    {"name": "Lune",                    "ats": "ashby",           "slug": "lune"},
+    {"name": "Anaergia",                "ats": "ashby",           "slug": "anaergia"},
+    {"name": "Enerparc",                "ats": "ashby",           "slug": "enerparc"},
+    {"name": "Kairos Power",            "ats": "ashby",           "slug": "kairospower"},
+    {"name": "Commonwealth Fusion",     "ats": "ashby",           "slug": "cfs"},
+    {"name": "Proxima Fusion",          "ats": "ashby",           "slug": "proximafusion"},
+    {"name": "Focused Energy",          "ats": "ashby",           "slug": "focusedenergy"},
+    {"name": "Ørsted (Ashby)",          "ats": "ashby",           "slug": "orsted"},
+    {"name": "Acciona",                 "ats": "ashby",           "slug": "acciona"},
+    {"name": "Carbyne Space",           "ats": "ashby",           "slug": "carbynespace"},
+    {"name": "Launcher",                "ats": "ashby",           "slug": "launcherspace"},
 ]
 
-# Keywords to filter job titles on — aligned with the candidate's profile
+# Keywords to filter job titles on — aligned with the candidate's profile.
+# Broad enough to catch all relevant engineering / operations roles.
 _TITLE_KEYWORDS = [
+    # Core engineering disciplines
     "process engineer", "manufacturing engineer", "operations engineer",
-    "production engineer", "industrial engineer", "continuous improvement",
-    "process improvement", "lean engineer", "project engineer",
-    "program manager", "technical program", "graduate engineer",
-    "graduate programme", "graduate program", "engineering graduate",
-    "operations excellence", "supply chain engineer", "reliability engineer",
-    "mechanical engineer", "aeronautical", "aerospace engineer",
+    "production engineer", "industrial engineer", "mechanical engineer",
+    "aeronautical", "aerospace engineer", "propulsion engineer",
+    "systems engineer", "thermal engineer", "structural engineer",
+    "materials engineer", "test engineer", "reliability engineer",
+    "quality engineer", "maintenance engineer", "plant engineer",
+    # Improvement / excellence
+    "continuous improvement", "process improvement", "lean engineer",
+    "lean manufacturing", "six sigma", "operational excellence",
+    "operations excellence", "process optimisation", "process optimization",
+    # Project / program
+    "project engineer", "program manager", "technical program",
+    "project manager", "programme manager",
+    # Graduate / early-career
+    "graduate engineer", "graduate programme", "graduate program",
+    "engineering graduate", "junior engineer", "associate engineer",
+    "graduate scheme", "early career engineer",
+    # Supply chain / logistics
+    "supply chain engineer", "supply chain analyst", "logistics engineer",
+    "demand planner", "procurement engineer",
+    # Energy / sustainability
+    "energy engineer", "renewable energy", "sustainability engineer",
+    "hydrogen engineer", "battery engineer", "electrochemical",
+    # Specific domain
+    "flight test", "propulsion", "turbine", "compressor",
+    "automation engineer", "robotics engineer", "controls engineer",
+    "field engineer", "applications engineer",
 ]
 
 _HEADERS = {
@@ -395,6 +491,64 @@ def _scrape_smartrecruiters(company: dict, max_jobs: int) -> list[JobPosting]:
     return jobs
 
 
+# ── AshbyHQ scraper ──────────────────────────────────────────────────────────
+
+def _scrape_ashby(company: dict, max_jobs: int) -> list[JobPosting]:
+    """
+    AshbyHQ public posting API — no auth, descriptions included inline.
+    Endpoint: GET https://api.ashbyhq.com/posting-public/jobs?organizationHostedJobsPageName={slug}
+    """
+    slug = company["slug"]
+    name = company["name"]
+    jobs: list[JobPosting] = []
+
+    url = (
+        f"https://api.ashbyhq.com/posting-public/jobs"
+        f"?organizationHostedJobsPageName={slug}"
+    )
+    try:
+        with httpx.Client(timeout=15, headers=_HEADERS, follow_redirects=True) as client:
+            resp = client.get(url)
+            resp.raise_for_status()
+            postings = resp.json().get("results", [])
+
+        for p in postings:
+            title = p.get("title", "")
+            if not _title_matches(title):
+                continue
+
+            job_url = p.get("jobUrl") or p.get("applyUrl") or ""
+            if not job_url:
+                continue
+            location = p.get("locationName") or p.get("location") or "Unknown"
+            desc_html = p.get("descriptionHtml") or p.get("description") or ""
+            description = (
+                BeautifulSoup(desc_html, "html.parser").get_text(separator="\n", strip=True)[:5000]
+                if desc_html else ""
+            )
+
+            jobs.append(JobPosting(
+                title=title,
+                company=name,
+                location=location,
+                description=description,
+                url=job_url,
+                source="company_careers",
+                job_id=_job_id(job_url),
+            ))
+
+            if len(jobs) >= max_jobs:
+                break
+
+        if jobs:
+            logger.info("[company_careers] Ashby %s → %d jobs", name, len(jobs))
+
+    except Exception as exc:
+        logger.debug("[company_careers] Ashby %s failed: %s", name, exc)
+
+    return jobs
+
+
 # ── Verified-endpoint scraper ───────────────────────────────────────────────
 
 def _scrape_verified_workday(name: str, endpoint: str, max_jobs: int) -> list[JobPosting]:
@@ -466,6 +620,9 @@ class CompanyCareerscraper(BaseJobScraper):
                 elif ats == "smartrecruiters":
                     slug = endpoint.split("/companies/")[1].split("/")[0]
                     all_jobs.extend(_scrape_smartrecruiters({"name": name, "slug": slug}, self.max_jobs))
+                elif ats == "ashby":
+                    slug = endpoint.split("jobsPageName=")[-1]
+                    all_jobs.extend(_scrape_ashby({"name": name, "slug": slug}, self.max_jobs))
                 time.sleep(self.delay)
             except Exception as exc:
                 logger.error("[company_careers] verified %s failed: %s", name, exc)
@@ -484,6 +641,8 @@ class CompanyCareerscraper(BaseJobScraper):
                     all_jobs.extend(_scrape_lever(company, self.max_jobs))
                 elif ats == "smartrecruiters":
                     all_jobs.extend(_scrape_smartrecruiters(company, self.max_jobs))
+                elif ats == "ashby":
+                    all_jobs.extend(_scrape_ashby(company, self.max_jobs))
                 time.sleep(self.delay)
             except Exception as exc:
                 logger.error("[company_careers] %s failed: %s", company["name"], exc)
