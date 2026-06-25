@@ -40,6 +40,7 @@ jobs:
           GROQ_MODEL=llama-3.3-70b-versatile
           GEMINI_MODEL=gemini-2.0-flash
           MIN_MATCH_SCORE=8
+          MAX_AI_EVALS_PER_RUN=60
           SCRAPE_DELAY_SECONDS=1
           MAX_JOBS_PER_BOARD=15
           SCRAPE_WORKERS=4
@@ -69,3 +70,11 @@ jobs:
           name: job-hunter-log-${{ github.run_number }}
           path: job_hunter.log
           retention-days: 7
+
+      - name: Upload run summary
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: job-hunter-summary-${{ github.run_number }}
+          path: data/run_summary.txt
+          retention-days: 30

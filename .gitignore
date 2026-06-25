@@ -8,6 +8,7 @@ inputs/PUT_YOUR_CV_HERE.txt
 applications/
 data/jobs_raw.json
 data/feedback_cache.json
+data/run_summary.txt
 job_hunter.log
 /tmp/jh_*.log
 

@@ -25,12 +25,38 @@ NOTION_DATABASE_ID: str = os.getenv("NOTION_DATABASE_ID", "")
 # ── Models ─────────────────────────────────────────────────────────────────
 GROQ_MODEL: str = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
+# Cheap, high-throughput model used for the batched triage pass. The slow,
+# expensive GROQ_MODEL is reserved for full evaluation of triage survivors only.
+GROQ_TRIAGE_MODEL: str = os.getenv("GROQ_TRIAGE_MODEL", "llama-3.1-8b-instant")
 
 # ── Pipeline settings ──────────────────────────────────────────────────────
 MIN_MATCH_SCORE: int = int(os.getenv("MIN_MATCH_SCORE", "7"))
+# Max AI evaluations per run — protects the free-tier daily quota. Jobs beyond
+# this cap are left unprocessed and roll over to the next run.
+MAX_AI_EVALS_PER_RUN: int = int(os.getenv("MAX_AI_EVALS_PER_RUN", "80"))
 SCRAPE_DELAY_SECONDS: float = float(os.getenv("SCRAPE_DELAY_SECONDS", "1"))
 MAX_JOBS_PER_BOARD: int = int(os.getenv("MAX_JOBS_PER_BOARD", "15"))
 SCRAPE_WORKERS: int = int(os.getenv("SCRAPE_WORKERS", "4"))   # parallel job fetches
+
+# ── AI triage cascade ────────────────────────────────────────────────────────
+# A cheap batched triage pass scores many jobs per request, so only the most
+# promising ones consume a full (expensive) evaluation. This is what lets a
+# single run cover the whole fresh-job pool instead of stalling on rate limits.
+AI_TRIAGE_BATCH_SIZE: int = int(os.getenv("AI_TRIAGE_BATCH_SIZE", "10"))
+# Most jobs to triage in one run (each batch is one cheap API call).
+MAX_TRIAGE_PER_RUN: int = int(os.getenv("MAX_TRIAGE_PER_RUN", "250"))
+# Jobs scoring at least (MIN_MATCH_SCORE - TRIAGE_MARGIN) in triage get a full
+# deep evaluation. The margin keeps borderline jobs from being dropped too early.
+TRIAGE_MARGIN: int = int(os.getenv("TRIAGE_MARGIN", "2"))
+
+# ── Deep evaluation batching ─────────────────────────────────────────────────
+# Finalists are evaluated in batches so one API call covers multiple jobs.
+# Batching cuts API requests ~4× and token overhead ~50% vs individual calls,
+# drastically reducing rate-limit errors on the free Groq tier.
+DEEP_EVAL_BATCH_SIZE: int = int(os.getenv("DEEP_EVAL_BATCH_SIZE", "4"))
+# Seconds to sleep between deep-eval batches to stay under the 6 000 token/min
+# Groq rate limit (each 4-job batch uses ~4 000 tokens → 40s keeps us safe).
+DEEP_EVAL_INTER_BATCH_SLEEP: int = int(os.getenv("DEEP_EVAL_INTER_BATCH_SLEEP", "40"))
 
 # ── LinkedIn (optional auth) ───────────────────────────────────────────────
 LINKEDIN_EMAIL: str = os.getenv("LINKEDIN_EMAIL", "")

@@ -1,0 +1,44 @@
+name: 🔎 Discover Company ATS Endpoints
+
+# Probes the official careers APIs (Greenhouse / Lever / SmartRecruiters) for
+# every target company and commits the CONFIRMED endpoints to
+# data/target_companies_ats.json. Run this occasionally (manually) — the daily
+# hunt then scrapes those companies straight from the source.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Discover ATS endpoints
+        run: python discover_ats.py
+
+      - name: Commit verified endpoints
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet data/target_companies_ats.json; then
+            git add data/target_companies_ats.json
+            git commit -m "chore: refresh verified company ATS endpoints"
+            git push
+          else
+            echo "No new endpoints discovered."
+          fi
